@@ -1,0 +1,14 @@
+{
+  "TypeName": "MyOtherService",
+  "Endpoints": [
+    {
+      "MethodName": "DoJazzyThings",
+      "ReturnType": {
+        "Typename": "Int32",
+        "NestedElements": []
+      },
+      "Attributes": [],
+      "Parameters": []
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "TypeName": "TheThirdService",
+  "Endpoints": [
+    {
+      "MethodName": "Boom",
+      "ReturnType": {
+        "Typename": "Void",
+        "NestedElements": []
+      },
+      "Attributes": [],
+      "Parameters": [
+        {
+          "Type": {
+            "Typename": "String",
+            "NestedElements": []
+          },
+          "Ordinal": 0
+        },
+        {
+          "Type": {
+            "Typename": "Int32",
+            "NestedElements": []
+          },
+          "Ordinal": 1
+        }
+      ]
+    }
+  ]
+}

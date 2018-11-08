@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 
 namespace ApiGuard.TestApi
 {
-    public class Api
+    public class MyExampleService
     {
         public void Method()
         {
 
         }
 
-        public void MethodWithSimpleArgs(int a, string b, DateTime c)
+        public void MethodWithSimpleArgs(string a, string b, DateTime c)
         {
 
         }
 
-        public void MethodWithComplexArgs(StringBuilder a, Args b)
+        public void MethodWithComplexArgs(StringBuilder a, Args b, CancellationToken token)
         {
 
         }

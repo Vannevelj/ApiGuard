@@ -1,0 +1,144 @@
+{
+  "TypeName": "MyExampleService",
+  "Endpoints": [
+    {
+      "MethodName": "Method",
+      "ReturnType": {
+        "Typename": "Void",
+        "NestedElements": []
+      },
+      "Attributes": [],
+      "Parameters": []
+    },
+    {
+      "MethodName": "MethodWithSimpleArgs",
+      "ReturnType": {
+        "Typename": "Void",
+        "NestedElements": []
+      },
+      "Attributes": [],
+      "Parameters": [
+        {
+          "Type": {
+            "Typename": "String",
+            "NestedElements": []
+          },
+          "Ordinal": 0
+        },
+        {
+          "Type": {
+            "Typename": "String",
+            "NestedElements": []
+          },
+          "Ordinal": 1
+        },
+        {
+          "Type": {
+            "Typename": "DateTime",
+            "NestedElements": []
+          },
+          "Ordinal": 2
+        }
+      ]
+    },
+    {
+      "MethodName": "MethodWithComplexArgs",
+      "ReturnType": {
+        "Typename": "Void",
+        "NestedElements": []
+      },
+      "Attributes": [],
+      "Parameters": [
+        {
+          "Type": {
+            "Typename": "StringBuilder",
+            "NestedElements": []
+          },
+          "Ordinal": 0
+        },
+        {
+          "Type": {
+            "Typename": "Args",
+            "NestedElements": [
+              {
+                "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                "Type": {
+                  "Typename": "Int32",
+                  "NestedElements": []
+                },
+                "Name": "Id"
+              },
+              {
+                "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                "Type": {
+                  "Typename": "Opts",
+                  "NestedElements": [
+                    {
+                      "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                      "Type": {
+                        "Typename": "String",
+                        "NestedElements": []
+                      },
+                      "Name": "Key"
+                    },
+                    {
+                      "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                      "Type": {
+                        "Typename": "String",
+                        "NestedElements": []
+                      },
+                      "Name": "Value"
+                    }
+                  ]
+                },
+                "Name": "Options"
+              },
+              {
+                "$type": "ApiGuard.Models.MyMethod, ApiGuard",
+                "ReturnType": {
+                  "Typename": "Void",
+                  "NestedElements": []
+                },
+                "Name": "DoSomething",
+                "Parameters": [
+                  {
+                    "Type": {
+                      "Typename": "Int32",
+                      "NestedElements": []
+                    },
+                    "Ordinal": 0
+                  },
+                  {
+                    "Type": {
+                      "Typename": "Opts",
+                      "NestedElements": [
+                        {
+                          "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                          "Type": {
+                            "Typename": "String",
+                            "NestedElements": []
+                          },
+                          "Name": "Key"
+                        },
+                        {
+                          "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                          "Type": {
+                            "Typename": "String",
+                            "NestedElements": []
+                          },
+                          "Name": "Value"
+                        }
+                      ]
+                    },
+                    "Ordinal": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "Ordinal": 1
+        }
+      ]
+    }
+  ]
+}
