@@ -1,24 +1,24 @@
 {
-  "TypeName": "TheThirdService",
+  "TypeName": "global::ApiGuard.TestApi.TheThirdService",
   "Endpoints": [
     {
       "MethodName": "Boom",
       "ReturnType": {
-        "Typename": "Void",
+        "Typename": "void",
         "NestedElements": []
       },
       "Attributes": [],
       "Parameters": [
         {
           "Type": {
-            "Typename": "String",
+            "Typename": "string",
             "NestedElements": []
           },
           "Ordinal": 0
         },
         {
           "Type": {
-            "Typename": "Int32",
+            "Typename": "int",
             "NestedElements": []
           },
           "Ordinal": 1

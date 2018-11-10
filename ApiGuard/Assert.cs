@@ -53,14 +53,14 @@ namespace ApiGuard
             {
                 var endpoint = new Endpoint
                 {
-                    MethodName = methodSymbol.Name,
-                    ReturnType = new MyType(methodSymbol.ReturnType.MetadataName),
+                    MethodName = methodSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    ReturnType = new MyType(methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
                     Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).ToList(),
                 };
 
                 foreach (var parameter in methodSymbol.Parameters)
                 {
-                    var param = new MyParameter(new MyType(parameter.Type.MetadataName), parameter.Ordinal);
+                    var param = new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)), parameter.Ordinal);
 
                     Fill(param, parameter, definingAssembly);
                     endpoint.Parameters.Add(param);
@@ -71,12 +71,12 @@ namespace ApiGuard
 
             var api = new Api
             {
-                TypeName = symbol.Name,
+                TypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                 Endpoints = endpoints
             };
 
             // Once this entire tree is parsed, see if there is an existing tree document in the repository
-            var documentPath = Path.Combine(solutionPath, projectName, $"api_{api.TypeName}.json");
+            var documentPath = Path.Combine(solutionPath, projectName, $"api_{symbol.Name}.json");
             var hasExistingApiDocument = File.Exists(documentPath);
 
             // If there isn't, create one and mark as success
@@ -126,9 +126,6 @@ namespace ApiGuard
             // The exception to this is when we see a [BETA] or [OBSOLETE] attribute on it
             // Otherwise, return success
 
-            // TODO: support multiple API files
-
-
             // In a separate project, provide a [BETA] attribute and corresponding Roslyn analyzer so it shows a warning
 
             // Out of scope:
@@ -144,13 +141,13 @@ namespace ApiGuard
             var parameterType = parameterSymbol.Type;
             if (!Equals(parameterType.ContainingAssembly.Name, definingAssembly.Name))
             {
-                param.Type.Typename = parameterType.MetadataName;
+                param.Type.Typename = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
             else
             {
                 if (parameterType.IsValueType)
                 {
-                    param.Type.Typename = parameterType.MetadataName;
+                    param.Type.Typename = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 }
                 else
                 {
@@ -170,7 +167,7 @@ namespace ApiGuard
                 var newElement = new MyProperty
                 {
                     Name = property.Name,
-                    Type = new MyType(property.Type.MetadataName),
+                    Type = new MyType(property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
                 };
 
                 type.NestedElements.Add(newElement);
@@ -180,14 +177,14 @@ namespace ApiGuard
             var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName).ToList();
             foreach (var method in methods)
             {
-                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.MetadataName));
+                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
 
                 type.NestedElements.Add(newElement);
                 Fill(newElement, method, definingAssembly);
 
                 foreach (var methodParameter in method.Parameters)
                 {
-                    var newParameter = new MyParameter(new MyType(methodParameter.Type.MetadataName), methodParameter.Ordinal);
+                    var newParameter = new MyParameter(new MyType(methodParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)), methodParameter.Ordinal);
 
                     newElement.Parameters.Add(newParameter);
                     Fill(newParameter, methodParameter, definingAssembly);
@@ -200,13 +197,13 @@ namespace ApiGuard
             var propertyType = propertySymbol.Type;
             if (!Equals(propertyType.ContainingAssembly, definingAssembly))
             {
-                property.Type.Typename = propertyType.MetadataName;
+                property.Type.Typename = propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
             else
             {
                 if (propertyType.IsValueType)
                 {
-                    property.Type.Typename = propertyType.MetadataName;
+                    property.Type.Typename = propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 }
                 else
                 {
@@ -220,22 +217,22 @@ namespace ApiGuard
 
         private static void Fill(MyMethod method, IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly)
         {
-            var propertyType = methodSymbol.ReturnType;
-            if (!Equals(propertyType.ContainingAssembly, definingAssembly))
+            var returnType = methodSymbol.ReturnType;
+            if (!Equals(returnType.ContainingAssembly, definingAssembly))
             {
-                method.ReturnType.Typename = propertyType.MetadataName;
+                method.ReturnType.Typename = returnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             }
             else
             {
-                if (propertyType.IsValueType)
+                if (returnType.IsValueType)
                 {
-                    method.ReturnType.Typename = propertyType.MetadataName;
+                    method.ReturnType.Typename = returnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                 }
                 else
                 {
                     // The parameter is a custom object
                     // Extract properties and methods
-                    var classType = (INamedTypeSymbol)propertyType;
+                    var classType = (INamedTypeSymbol)returnType;
                     Fill(method.ReturnType, classType, definingAssembly);
                 }
             }

@@ -1,10 +1,10 @@
 {
-  "TypeName": "MyExampleService",
+  "TypeName": "global::ApiGuard.TestApi.MyExampleService",
   "Endpoints": [
     {
       "MethodName": "Method",
       "ReturnType": {
-        "Typename": "Void",
+        "Typename": "void",
         "NestedElements": []
       },
       "Attributes": [],
@@ -13,28 +13,28 @@
     {
       "MethodName": "MethodWithSimpleArgs",
       "ReturnType": {
-        "Typename": "Void",
+        "Typename": "void",
         "NestedElements": []
       },
       "Attributes": [],
       "Parameters": [
         {
           "Type": {
-            "Typename": "String",
+            "Typename": "string",
             "NestedElements": []
           },
           "Ordinal": 0
         },
         {
           "Type": {
-            "Typename": "String",
+            "Typename": "string",
             "NestedElements": []
           },
           "Ordinal": 1
         },
         {
           "Type": {
-            "Typename": "DateTime",
+            "Typename": "global::System.DateTime",
             "NestedElements": []
           },
           "Ordinal": 2
@@ -44,26 +44,26 @@
     {
       "MethodName": "MethodWithComplexArgs",
       "ReturnType": {
-        "Typename": "Void",
+        "Typename": "void",
         "NestedElements": []
       },
       "Attributes": [],
       "Parameters": [
         {
           "Type": {
-            "Typename": "StringBuilder",
+            "Typename": "global::System.Text.StringBuilder",
             "NestedElements": []
           },
           "Ordinal": 0
         },
         {
           "Type": {
-            "Typename": "Args",
+            "Typename": "global::ApiGuard.TestApi.Args",
             "NestedElements": [
               {
                 "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                 "Type": {
-                  "Typename": "Int32",
+                  "Typename": "int",
                   "NestedElements": []
                 },
                 "Name": "Id"
@@ -71,12 +71,12 @@
               {
                 "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                 "Type": {
-                  "Typename": "Opts",
+                  "Typename": "global::ApiGuard.TestApi.Opts",
                   "NestedElements": [
                     {
                       "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                       "Type": {
-                        "Typename": "String",
+                        "Typename": "string",
                         "NestedElements": []
                       },
                       "Name": "Key"
@@ -84,7 +84,7 @@
                     {
                       "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                       "Type": {
-                        "Typename": "String",
+                        "Typename": "string",
                         "NestedElements": []
                       },
                       "Name": "Value"
@@ -96,26 +96,26 @@
               {
                 "$type": "ApiGuard.Models.MyMethod, ApiGuard",
                 "ReturnType": {
-                  "Typename": "Void",
+                  "Typename": "void",
                   "NestedElements": []
                 },
                 "Name": "DoSomething",
                 "Parameters": [
                   {
                     "Type": {
-                      "Typename": "Int32",
+                      "Typename": "int",
                       "NestedElements": []
                     },
                     "Ordinal": 0
                   },
                   {
                     "Type": {
-                      "Typename": "Opts",
+                      "Typename": "global::ApiGuard.TestApi.Opts",
                       "NestedElements": [
                         {
                           "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                           "Type": {
-                            "Typename": "String",
+                            "Typename": "string",
                             "NestedElements": []
                           },
                           "Name": "Key"
@@ -123,7 +123,7 @@
                         {
                           "$type": "ApiGuard.Models.MyProperty, ApiGuard",
                           "Type": {
-                            "Typename": "String",
+                            "Typename": "string",
                             "NestedElements": []
                           },
                           "Name": "Value"
@@ -137,6 +137,13 @@
             ]
           },
           "Ordinal": 1
+        },
+        {
+          "Type": {
+            "Typename": "global::System.Threading.CancellationToken",
+            "NestedElements": []
+          },
+          "Ordinal": 2
         }
       ]
     }

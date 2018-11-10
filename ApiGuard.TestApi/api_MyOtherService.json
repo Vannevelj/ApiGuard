@@ -1,10 +1,10 @@
 {
-  "TypeName": "MyOtherService",
+  "TypeName": "global::ApiGuard.TestApi.MyOtherService",
   "Endpoints": [
     {
       "MethodName": "DoJazzyThings",
       "ReturnType": {
-        "Typename": "Int32",
+        "Typename": "int",
         "NestedElements": []
       },
       "Attributes": [],
