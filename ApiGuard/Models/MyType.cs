@@ -6,7 +6,7 @@ namespace ApiGuard.Models
 {
     internal class MyType : IEquatable<MyType>
     {
-        public string Typename { get; set; }
+        public string Typename { get; }
         public List<IElement> NestedElements { get; } = new List<IElement>();
 
         public MyType(string typename)

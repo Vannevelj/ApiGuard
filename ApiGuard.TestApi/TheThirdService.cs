@@ -6,6 +6,7 @@ namespace ApiGuard.TestApi
 {
     public class TheThirdService
     {
+        [Obsolete]
         public void Boom(string name, int number)
         {
 

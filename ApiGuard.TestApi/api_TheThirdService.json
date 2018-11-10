@@ -7,7 +7,12 @@
         "Typename": "void",
         "NestedElements": []
       },
-      "Attributes": [],
+      "Attributes": [
+        {
+          "Typename": "global::System.ObsoleteAttribute",
+          "NestedElements": []
+        }
+      ],
       "Parameters": [
         {
           "Type": {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Microsoft.CodeAnalysis;
 
 namespace ApiGuard.Models
 {
@@ -7,7 +6,7 @@ namespace ApiGuard.Models
     {
         public string MethodName { get; set; }
         public MyType ReturnType { get; set; }
-        public List<INamedTypeSymbol> Attributes { get; set; } = new List<INamedTypeSymbol>();
+        public List<MyType> Attributes { get; set; } = new List<MyType>();
         public List<MyParameter> Parameters { get; } = new List<MyParameter>();
     }
 }

@@ -47,7 +47,7 @@ namespace ApiGuard.Domain
                 {
                     MethodName = methodSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                     ReturnType = new MyType(methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
-                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).ToList(),
+                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))).ToList(),
                 };
 
                 foreach (var parameter in methodSymbol.Parameters)
@@ -69,30 +69,7 @@ namespace ApiGuard.Domain
 
             return api;
         }
-
-        private static void Fill(MyParameter param, IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly)
-        {
-            var parameterType = parameterSymbol.Type;
-            if (!Equals(parameterType.ContainingAssembly.Name, definingAssembly.Name))
-            {
-                param.Type.Typename = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            }
-            else
-            {
-                if (parameterType.IsValueType)
-                {
-                    param.Type.Typename = parameterType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                }
-                else
-                {
-                    // The parameter is a custom object
-                    // Extract properties and methods
-                    var classType = (INamedTypeSymbol)parameterType;
-                    Fill(param.Type, classType, definingAssembly);
-                }
-            }
-        }
-
+        
         private static void Fill(MyType type, INamedTypeSymbol complexObject, IAssemblySymbol definingAssembly)
         {
             var properties = complexObject.GetMembers().OfType<IPropertySymbol>().ToList();
@@ -129,46 +106,36 @@ namespace ApiGuard.Domain
         private static void Fill(MyProperty property, IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly)
         {
             var propertyType = propertySymbol.Type;
-            if (!Equals(propertyType.ContainingAssembly, definingAssembly))
+            if (Equals(propertyType.ContainingAssembly, definingAssembly) && !propertyType.IsValueType)
             {
-                property.Type.Typename = propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            }
-            else
-            {
-                if (propertyType.IsValueType)
-                {
-                    property.Type.Typename = propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                }
-                else
-                {
-                    // The parameter is a custom object
-                    // Extract properties and methods
-                    var classType = (INamedTypeSymbol)propertyType;
-                    Fill(property.Type, classType, definingAssembly);
-                }
+                // The parameter is a custom object
+                // Extract properties and methods
+                var classType = (INamedTypeSymbol)propertyType;
+                Fill(property.Type, classType, definingAssembly);
             }
         }
 
         private static void Fill(MyMethod method, IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly)
         {
             var returnType = methodSymbol.ReturnType;
-            if (!Equals(returnType.ContainingAssembly, definingAssembly))
+            if (Equals(returnType.ContainingAssembly, definingAssembly) && !returnType.IsValueType)
             {
-                method.ReturnType.Typename = returnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                // The parameter is a custom object
+                // Extract properties and methods
+                var classType = (INamedTypeSymbol)returnType;
+                Fill(method.ReturnType, classType, definingAssembly);
             }
-            else
+        }
+
+        private static void Fill(MyParameter param, IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly)
+        {
+            var parameterType = parameterSymbol.Type;
+            if (Equals(parameterType.ContainingAssembly.Name, definingAssembly.Name) && parameterType.IsValueType)
             {
-                if (returnType.IsValueType)
-                {
-                    method.ReturnType.Typename = returnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                }
-                else
-                {
-                    // The parameter is a custom object
-                    // Extract properties and methods
-                    var classType = (INamedTypeSymbol)returnType;
-                    Fill(method.ReturnType, classType, definingAssembly);
-                }
+                // The parameter is a custom object
+                // Extract properties and methods
+                var classType = (INamedTypeSymbol)parameterType;
+                Fill(param.Type, classType, definingAssembly);
             }
         }
     }

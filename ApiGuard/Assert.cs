@@ -7,15 +7,15 @@ namespace ApiGuard
 {
     public static class Assert
     {
-        public static async Task HasNotChanged(params Type[] types)
+        public static async Task HasNotChanged(ConfigurationOptions options, params Type[] types)
         {
             foreach (var type in types)
             {
-                await HasNotChanged(type);
+                await HasNotChanged(options, type);
             }
         }
 
-        public static async Task HasNotChanged(Type type)
+        public static async Task HasNotChanged(ConfigurationOptions options, Type type)
         {
             var projectResolver = new ProjectResolver();
             var typeLoader = new RoslynTypeLoader(projectResolver);
