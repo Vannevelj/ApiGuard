@@ -29,7 +29,6 @@ namespace ApiGuard.TestApi
 
         public void DoSomething(int a, Opts b)
         {
-
         }
     }
 

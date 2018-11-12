@@ -5,6 +5,6 @@ namespace ApiGuard.Domain.Strategies.Interfaces
 {
     internal interface IEndpointMatchingStrategy
     {
-        EndpointResult GetEndpoint(List<Endpoint> existingEndpoints, Endpoint otherEndpoint);
+        EndpointResult GetEndpoint(List<MyMethod> existingEndpoints, MyMethod otherEndpoint);
     }
 }

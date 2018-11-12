@@ -6,7 +6,9 @@ namespace ApiGuard.Models
 {
     internal class EndpointResult
     {
-        public bool IsExactMatch { get; set; }
-        public Endpoint Endpoint { get; set; }
+        public bool IsExactMatch => Differences == 0;
+        public int Differences { get; set; }
+        public MyMethod Endpoint { get; set; }
+        public List<SymbolMismatch> SymbolsChanged { get; set; }
     }
 }

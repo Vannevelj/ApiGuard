@@ -2,14 +2,18 @@
   "TypeName": "global::ApiGuard.TestApi.TheThirdService",
   "Endpoints": [
     {
-      "MethodName": "Boom",
+      "ParentTypeName": null,
       "ReturnType": {
         "Typename": "void",
+        "Depth": 1,
         "NestedElements": []
       },
+      "Name": "Boom",
+      "Depth": 0,
       "Attributes": [
         {
           "Typename": "global::System.ObsoleteAttribute",
+          "Depth": 0,
           "NestedElements": []
         }
       ],
@@ -17,16 +21,20 @@
         {
           "Type": {
             "Typename": "string",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 0
+          "Ordinal": 0,
+          "Depth": 0
         },
         {
           "Type": {
             "Typename": "int",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 1
+          "Ordinal": 1,
+          "Depth": 0
         }
       ]
     }

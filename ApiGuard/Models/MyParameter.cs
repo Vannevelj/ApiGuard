@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 namespace ApiGuard.Models
 {
-    internal class MyParameter : IEquatable<MyParameter>
+    internal class MyParameter : IEquatable<MyParameter>, ISymbol
     {
-        public MyType Type { get; }
-        public int Ordinal { get; }
+        public MyType Type { get; set; }
+        public int Ordinal { get; set; }
+        public int Depth { get; set; }
 
         public MyParameter(MyType type, int ordinal)
         {
@@ -17,6 +18,11 @@ namespace ApiGuard.Models
         public override bool Equals(object obj) => Equals(obj as MyParameter);
         public bool Equals(MyParameter other)
         {
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+
             return other != null &&
                    Ordinal == other.Ordinal &&
                    Type == other.Type;

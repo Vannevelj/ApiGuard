@@ -14,9 +14,9 @@ namespace ApiGuard.Models
         }
 
         public string TypeName { get; set; }
-        public List<Endpoint> Endpoints { get; set; } = new List<Endpoint>();
+        public List<MyMethod> Endpoints { get; set; } = new List<MyMethod>();
 
-        public EndpointResult GetMatchingEndpoint(Endpoint otherEndpoint)
+        public EndpointResult GetMatchingEndpoint(MyMethod otherEndpoint)
         {
             return _endpointMatchingStrategy.GetEndpoint(Endpoints, otherEndpoint);
         }

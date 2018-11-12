@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain;
 using ApiGuard.Exceptions;
@@ -36,20 +37,28 @@ namespace ApiGuard
                 throw new ApiNotFoundException(existingApi.TypeName);
             }
 
-            foreach (var endpoint in existingApi.Endpoints)
+            foreach (var existingEndpoint in existingApi.Endpoints)
             {
-                var correspondingEndpoint = api.GetMatchingEndpoint(endpoint);
+                var correspondingEndpoint = api.GetMatchingEndpoint(existingEndpoint);
                 if (correspondingEndpoint.Endpoint == null)
                 {
-                    throw new EndpointNotFoundException(endpoint, api.TypeName);
+                    throw new EndpointNotFoundException(existingEndpoint, api.TypeName);
                 }
 
                 if (!correspondingEndpoint.IsExactMatch)
                 {
-                    throw new EndpointMismatchException(correspondingEndpoint.Endpoint, endpoint, api.TypeName);
+                    var differentEndpointDefinition = correspondingEndpoint.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(correspondingEndpoint.Endpoint));
+                    if (differentEndpointDefinition != null)
+                    {
+                        throw new EndpointMismatchException(correspondingEndpoint.Endpoint, existingEndpoint, api.TypeName);
+                    }
+
+                    var innerMostMismatch = correspondingEndpoint.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
+                    throw new DefinitionMismatchException(innerMostMismatch);
                 }
             }
 
+            // TODO: if there is a change in a type in the hierarchy of the method, use that in the error message
 
             // The exception to this is when we see a [BETA] or [OBSOLETE] attribute on it
 

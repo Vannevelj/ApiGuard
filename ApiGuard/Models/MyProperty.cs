@@ -3,14 +3,21 @@ using System.Collections.Generic;
 
 namespace ApiGuard.Models
 {
-    internal class MyProperty : IElement, IEquatable<MyProperty>
+    internal class MyProperty : IChildSymbol, IEquatable<MyProperty>
     {
+        public string ParentTypeName { get; set; }
         public MyType Type { get; set; }
         public string Name { get; set; }
+        public int Depth { get; set; }
 
         public override bool Equals(object obj) => Equals(obj as MyProperty);
         public bool Equals(MyProperty other)
         {
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+
             return other != null &&
                    Name == other.Name &&
                    Type == other.Type;
@@ -26,5 +33,7 @@ namespace ApiGuard.Models
 
         public static bool operator ==(MyProperty property1, MyProperty property2) => EqualityComparer<MyProperty>.Default.Equals(property1, property2);
         public static bool operator !=(MyProperty property1, MyProperty property2) => !(property1 == property2);
+
+        public override string ToString() => $"{ParentTypeName}.{Name} ({Type.Typename})";
     }
 }

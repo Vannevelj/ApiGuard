@@ -7,13 +7,13 @@ namespace ApiGuard.Domain.Strategies
 {
     internal class ExactEndpointMatchingStrategy : IEndpointMatchingStrategy
     {
-        public EndpointResult GetEndpoint(List<Endpoint> existingEndpoints, Endpoint otherEndpoint)
+        public EndpointResult GetEndpoint(List<MyMethod> existingEndpoints, MyMethod otherEndpoint)
         {
             var endpoint = existingEndpoints.SingleOrDefault(x => x == otherEndpoint);
             return new EndpointResult
             {
                 Endpoint = endpoint,
-                IsExactMatch = true,
+                Differences = 0,
             };
         }
     }

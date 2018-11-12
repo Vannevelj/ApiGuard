@@ -4,18 +4,25 @@ using System.Linq;
 
 namespace ApiGuard.Models
 {
-    internal class MyType : IEquatable<MyType>
+    internal class MyType : IEquatable<MyType>, ISymbol
     {
-        public string Typename { get; }
-        public List<IElement> NestedElements { get; } = new List<IElement>();
+        public string Typename { get; set; }
+        public int Depth { get; set; }
+        public List<ISymbol> NestedElements { get; set; } = new List<ISymbol>();
 
-        public MyType(string typename)
+        public MyType(string typename, int depth)
         {
             Typename = typename;
+            Depth = depth;
         }
 
         public bool Equals(MyType other)
         {
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+
             return other != null &&
                 Typename == other.Typename &&
                 NestedElements.SequenceEqual(other.NestedElements);
@@ -30,7 +37,7 @@ namespace ApiGuard.Models
         {
             var hashCode = 1892093377;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Typename);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<IElement>>.Default.GetHashCode(NestedElements);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<ISymbol>>.Default.GetHashCode(NestedElements);
             return hashCode;
         }
 

@@ -2,73 +2,195 @@
   "TypeName": "global::ApiGuard.TestApi.MyExampleService",
   "Endpoints": [
     {
-      "MethodName": "Method",
+      "ParentTypeName": null,
       "ReturnType": {
         "Typename": "void",
+        "Depth": 1,
         "NestedElements": []
       },
+      "Name": "Method",
+      "Depth": 0,
       "Attributes": [],
       "Parameters": []
     },
     {
-      "MethodName": "MethodWithSimpleArgs",
+      "ParentTypeName": null,
       "ReturnType": {
         "Typename": "void",
+        "Depth": 1,
         "NestedElements": []
       },
+      "Name": "MethodWithSimpleArgs",
+      "Depth": 0,
       "Attributes": [],
       "Parameters": [
         {
           "Type": {
-            "Typename": "string",
+            "Typename": "int",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 0
+          "Ordinal": 0,
+          "Depth": 0
         },
         {
           "Type": {
             "Typename": "string",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 1
+          "Ordinal": 1,
+          "Depth": 0
         },
         {
           "Type": {
             "Typename": "global::System.DateTime",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 2
+          "Ordinal": 2,
+          "Depth": 0
         }
       ]
     },
     {
-      "MethodName": "MethodWithComplexArgs",
+      "ParentTypeName": null,
       "ReturnType": {
         "Typename": "void",
+        "Depth": 1,
         "NestedElements": []
       },
+      "Name": "MethodWithComplexArgs",
+      "Depth": 0,
       "Attributes": [],
       "Parameters": [
         {
           "Type": {
             "Typename": "global::System.Text.StringBuilder",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 0
+          "Ordinal": 0,
+          "Depth": 0
         },
         {
           "Type": {
             "Typename": "global::ApiGuard.TestApi.Args",
-            "NestedElements": []
+            "Depth": 1,
+            "NestedElements": [
+              {
+                "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                "ParentTypeName": "global::ApiGuard.TestApi.Args",
+                "Type": {
+                  "Typename": "int",
+                  "Depth": 2,
+                  "NestedElements": []
+                },
+                "Name": "Id",
+                "Depth": 1
+              },
+              {
+                "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                "ParentTypeName": "global::ApiGuard.TestApi.Args",
+                "Type": {
+                  "Typename": "global::ApiGuard.TestApi.Opts",
+                  "Depth": 2,
+                  "NestedElements": [
+                    {
+                      "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                      "ParentTypeName": "global::ApiGuard.TestApi.Opts",
+                      "Type": {
+                        "Typename": "string",
+                        "Depth": 3,
+                        "NestedElements": []
+                      },
+                      "Name": "Key",
+                      "Depth": 2
+                    },
+                    {
+                      "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                      "ParentTypeName": "global::ApiGuard.TestApi.Opts",
+                      "Type": {
+                        "Typename": "string",
+                        "Depth": 3,
+                        "NestedElements": []
+                      },
+                      "Name": "Value",
+                      "Depth": 2
+                    }
+                  ]
+                },
+                "Name": "Options",
+                "Depth": 1
+              },
+              {
+                "$type": "ApiGuard.Models.MyMethod, ApiGuard",
+                "ParentTypeName": "global::ApiGuard.TestApi.Args",
+                "ReturnType": {
+                  "Typename": "void",
+                  "Depth": 2,
+                  "NestedElements": []
+                },
+                "Name": "DoSomething",
+                "Depth": 1,
+                "Attributes": [],
+                "Parameters": [
+                  {
+                    "Type": {
+                      "Typename": "int",
+                      "Depth": 2,
+                      "NestedElements": []
+                    },
+                    "Ordinal": 0,
+                    "Depth": 0
+                  },
+                  {
+                    "Type": {
+                      "Typename": "global::ApiGuard.TestApi.Opts",
+                      "Depth": 2,
+                      "NestedElements": [
+                        {
+                          "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                          "ParentTypeName": "global::ApiGuard.TestApi.Opts",
+                          "Type": {
+                            "Typename": "string",
+                            "Depth": 3,
+                            "NestedElements": []
+                          },
+                          "Name": "Key",
+                          "Depth": 2
+                        },
+                        {
+                          "$type": "ApiGuard.Models.MyProperty, ApiGuard",
+                          "ParentTypeName": "global::ApiGuard.TestApi.Opts",
+                          "Type": {
+                            "Typename": "string",
+                            "Depth": 3,
+                            "NestedElements": []
+                          },
+                          "Name": "Value",
+                          "Depth": 2
+                        }
+                      ]
+                    },
+                    "Ordinal": 1,
+                    "Depth": 0
+                  }
+                ]
+              }
+            ]
           },
-          "Ordinal": 1
+          "Ordinal": 1,
+          "Depth": 0
         },
         {
           "Type": {
             "Typename": "global::System.Threading.CancellationToken",
+            "Depth": 1,
             "NestedElements": []
           },
-          "Ordinal": 2
+          "Ordinal": 2,
+          "Depth": 0
         }
       ]
     }

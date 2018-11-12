@@ -35,27 +35,29 @@ namespace ApiGuard.Domain
             var compilation = await project.GetCompilationAsync();
 
             // Get symbol for the type passed in
-            var symbol = compilation.GetSymbolsWithName(x => x == type.Name).OfType<INamedTypeSymbol>().Single();
-            var definingAssembly = symbol.ContainingAssembly;
+            var apiSymbol = compilation.GetSymbolsWithName(x => x == type.Name).OfType<INamedTypeSymbol>().Single();
+            var definingAssembly = apiSymbol.ContainingAssembly;
 
             // For each method create an entry (Endpoint)
             // Each Endpoint contains the name of the method, return type and its arguments as well as targeted attributes
             // If the Type is a complex object, we repeat the process for that object but also include properties
-            var endpoints = new List<Endpoint>();
-            foreach (var methodSymbol in symbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName))
+            var endpoints = new List<MyMethod>();
+            var depth = 0;
+            foreach (var methodSymbol in apiSymbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName))
             {
-                var endpoint = new Endpoint
+                var endpoint = new MyMethod(
+                    methodSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                    new MyType(methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1))
                 {
-                    MethodName = methodSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                    ReturnType = new MyType(methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
-                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))).ToList(),
+                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth)).ToList(),
+                    Depth = depth,
                 };
 
                 foreach (var parameter in methodSymbol.Parameters)
                 {
-                    var param = new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)), parameter.Ordinal);
-
-                    Fill(param, parameter, definingAssembly);
+                    var param = new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), parameter.Ordinal);
+                    param.Depth = depth;
+                    Fill(param, parameter, definingAssembly, 0);
                     endpoint.Parameters.Add(param);
                 }
 
@@ -64,47 +66,51 @@ namespace ApiGuard.Domain
 
             var api = new Api(new BestGuessEndpointMatchingStrategy())
             {
-                TypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                TypeName = apiSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                 Endpoints = endpoints
             };
 
             return api;
         }
         
-        private static void Fill(MyType type, INamedTypeSymbol complexObject, IAssemblySymbol definingAssembly)
+        private static void Fill(MyType type, INamedTypeSymbol complexObject, IAssemblySymbol definingAssembly, int depth)
         {
+            depth++;
             var properties = complexObject.GetMembers().OfType<IPropertySymbol>().ToList();
             foreach (var property in properties)
             {
                 var newElement = new MyProperty
                 {
                     Name = property.Name,
-                    Type = new MyType(property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)),
+                    Type = new MyType(property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1),
+                    Depth = depth,
+                    ParentTypeName = type.Typename
                 };
 
                 type.NestedElements.Add(newElement);
-                Fill(newElement, property, definingAssembly);
+                Fill(newElement, property, definingAssembly, depth);
             }
 
             var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName).ToList();
             foreach (var method in methods)
             {
-                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)));
-
+                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1));
+                newElement.Depth = depth;
+                newElement.ParentTypeName = type.Typename;
                 type.NestedElements.Add(newElement);
-                Fill(newElement, method, definingAssembly);
+                Fill(newElement, method, definingAssembly, depth);
 
                 foreach (var methodParameter in method.Parameters)
                 {
-                    var newParameter = new MyParameter(new MyType(methodParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)), methodParameter.Ordinal);
-
+                    var newParameter = new MyParameter(new MyType(methodParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), methodParameter.Ordinal);
+                    newElement.Depth = depth;
                     newElement.Parameters.Add(newParameter);
-                    Fill(newParameter, methodParameter, definingAssembly);
+                    Fill(newParameter, methodParameter, definingAssembly, depth);
                 }
             }
         }
 
-        private static void Fill(MyProperty property, IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly)
+        private static void Fill(MyProperty property, IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly, int depth)
         {
             var propertyType = propertySymbol.Type;
             if (Equals(propertyType.ContainingAssembly, definingAssembly) && !propertyType.IsValueType)
@@ -112,11 +118,11 @@ namespace ApiGuard.Domain
                 // The parameter is a custom object
                 // Extract properties and methods
                 var classType = (INamedTypeSymbol)propertyType;
-                Fill(property.Type, classType, definingAssembly);
+                Fill(property.Type, classType, definingAssembly, depth);
             }
         }
 
-        private static void Fill(MyMethod method, IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly)
+        private static void Fill(MyMethod method, IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly, int depth)
         {
             var returnType = methodSymbol.ReturnType;
             if (Equals(returnType.ContainingAssembly, definingAssembly) && !returnType.IsValueType)
@@ -124,19 +130,19 @@ namespace ApiGuard.Domain
                 // The parameter is a custom object
                 // Extract properties and methods
                 var classType = (INamedTypeSymbol)returnType;
-                Fill(method.ReturnType, classType, definingAssembly);
+                Fill(method.ReturnType, classType, definingAssembly, depth);
             }
         }
 
-        private static void Fill(MyParameter param, IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly)
+        private static void Fill(MyParameter param, IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, int depth)
         {
             var parameterType = parameterSymbol.Type;
-            if (Equals(parameterType.ContainingAssembly.Name, definingAssembly.Name) && parameterType.IsValueType)
+            if (Equals(parameterType.ContainingAssembly.Name, definingAssembly.Name) && !parameterType.IsValueType)
             {
                 // The parameter is a custom object
                 // Extract properties and methods
                 var classType = (INamedTypeSymbol)parameterType;
-                Fill(param.Type, classType, definingAssembly);
+                Fill(param.Type, classType, definingAssembly, depth);
             }
         }
     }
