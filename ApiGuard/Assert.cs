@@ -39,9 +39,14 @@ namespace ApiGuard
             foreach (var endpoint in existingApi.Endpoints)
             {
                 var correspondingEndpoint = api.GetMatchingEndpoint(endpoint);
-                if (correspondingEndpoint == null)
+                if (correspondingEndpoint.Endpoint == null)
                 {
                     throw new EndpointNotFoundException(endpoint, api.TypeName);
+                }
+
+                if (!correspondingEndpoint.IsExactMatch)
+                {
+                    throw new EndpointMismatchException(correspondingEndpoint.Endpoint, endpoint, api.TypeName);
                 }
             }
 
@@ -56,6 +61,8 @@ namespace ApiGuard
             // Named arguments
             // Datamember attributes on complex objects
             // Automatic pass if there is a major version increase
+            // Attribute add/remove
+            // Re-ordering members inside a type
         }
     }
 }

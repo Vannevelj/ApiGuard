@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain.Interfaces;
+using ApiGuard.Domain.Strategies;
 using ApiGuard.Models;
 using Buildalyzer;
 using Buildalyzer.Workspaces;
@@ -61,7 +62,7 @@ namespace ApiGuard.Domain
                 endpoints.Add(endpoint);
             }
 
-            var api = new Api
+            var api = new Api(new BestGuessEndpointMatchingStrategy())
             {
                 TypeName = symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
                 Endpoints = endpoints
