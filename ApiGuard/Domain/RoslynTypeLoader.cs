@@ -4,40 +4,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain.Interfaces;
 using ApiGuard.Domain.Strategies;
+using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Models;
-using Buildalyzer;
-using Buildalyzer.Workspaces;
 using Microsoft.CodeAnalysis;
 
 namespace ApiGuard.Domain
 {
     internal class RoslynTypeLoader : ITypeLoader
     {
-        private readonly IProjectResolver _projectResolver;
+        private readonly IRoslynSymbolProvider _roslynSymbolProvider;
 
-        public RoslynTypeLoader(IProjectResolver projectResolver)
+        internal RoslynTypeLoader(IRoslynSymbolProvider roslynSymbolProvider)
         {
-            _projectResolver = projectResolver;
+            _roslynSymbolProvider = roslynSymbolProvider;
         }
 
-        public async Task<Api> LoadApi(Type type)
+        public async Task<Api> LoadApi(object input)
         {
-            var projectInfo = _projectResolver.GetProjectInfo(type);
-            var apiProjectPath = projectInfo.ProjectFilePath;
-
-            // Load the project into Roslyn workspace
-            var analyzerManager = new AnalyzerManager();
-            var adHocProject = analyzerManager.GetProject(apiProjectPath);
-            var workspace = adHocProject.GetWorkspace();
-            var project = workspace.CurrentSolution.Projects.Single(x => x.Name == projectInfo.ProjectName);
-
-            // Build the project
-            var compilation = await project.GetCompilationAsync();
-
-            // Get symbol for the type passed in
-            var apiSymbol = compilation.GetSymbolsWithName(x => x == type.Name).OfType<INamedTypeSymbol>().Single();
+            var apiSymbol = await _roslynSymbolProvider.GetApiClassSymbol(input);
             var definingAssembly = apiSymbol.ContainingAssembly;
-
+            
             // For each method create an entry (Endpoint)
             // Each Endpoint contains the name of the method, return type and its arguments as well as targeted attributes
             // If the Type is a complex object, we repeat the process for that object but also include properties

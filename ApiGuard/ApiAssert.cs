@@ -2,11 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain;
+using ApiGuard.Domain.Strategies;
 using ApiGuard.Exceptions;
 
 namespace ApiGuard
 {
-    public static class Assert
+    public static class ApiAssert
     {
         public static async Task HasNotChanged(ConfigurationOptions options, params Type[] types)
         {
@@ -19,7 +20,8 @@ namespace ApiGuard
         public static async Task HasNotChanged(ConfigurationOptions options, Type type)
         {
             var projectResolver = new ProjectResolver();
-            var typeLoader = new RoslynTypeLoader(projectResolver);
+            var symbolProvider = new FileSystemRoslynSymbolProvider(projectResolver);
+            var typeLoader = new RoslynTypeLoader(symbolProvider);
             var projectInfo = projectResolver.GetProjectInfo(type);
 
             var api = await typeLoader.LoadApi(type);
@@ -37,23 +39,22 @@ namespace ApiGuard
                 throw new ApiNotFoundException(existingApi.TypeName);
             }
 
-            foreach (var existingEndpoint in existingApi.Endpoints)
+            foreach (var endpointResult in existingApi.GetApiDifferences(api))
             {
-                var correspondingEndpoint = api.GetMatchingEndpoint(existingEndpoint);
-                if (correspondingEndpoint.Endpoint == null)
+                if (endpointResult.ExistingEndpoint == null)
                 {
-                    throw new EndpointNotFoundException(existingEndpoint, api.TypeName);
+                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint, api.TypeName);
                 }
 
-                if (!correspondingEndpoint.IsExactMatch)
+                if (!endpointResult.IsExactMatch)
                 {
-                    var differentEndpointDefinition = correspondingEndpoint.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(correspondingEndpoint.Endpoint));
+                    var differentEndpointDefinition = endpointResult.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(endpointResult.ExistingEndpoint));
                     if (differentEndpointDefinition != null)
                     {
-                        throw new EndpointMismatchException(correspondingEndpoint.Endpoint, existingEndpoint, api.TypeName);
+                        throw new EndpointMismatchException(endpointResult.ReceivedEndpoint, endpointResult.ExistingEndpoint, api.TypeName);
                     }
 
-                    var innerMostMismatch = correspondingEndpoint.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
+                    var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
                     throw new DefinitionMismatchException(innerMostMismatch);
                 }
             }

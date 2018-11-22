@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApiGuard.TestApi\ApiGuard.TestApi.csproj" />
     <ProjectReference Include="..\ApiGuard\ApiGuard.csproj" />
   </ItemGroup>
 

@@ -19,7 +19,8 @@ namespace ApiGuard.Domain.Strategies
 
                 endPointResults.Add(new EndpointResult
                 {
-                    Endpoint = existingEndpoint,
+                    ExistingEndpoint = existingEndpoint,
+                    ReceivedEndpoint = newEndpoint,
                     Differences = differences,
                     SymbolsChanged = symbolsChanged
                 });

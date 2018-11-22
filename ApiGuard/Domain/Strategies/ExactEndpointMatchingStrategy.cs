@@ -12,7 +12,7 @@ namespace ApiGuard.Domain.Strategies
             var endpoint = existingEndpoints.SingleOrDefault(x => x == otherEndpoint);
             return new EndpointResult
             {
-                Endpoint = endpoint,
+                ExistingEndpoint = endpoint,
                 Differences = 0,
             };
         }

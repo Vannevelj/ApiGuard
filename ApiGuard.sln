@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGuard", "ApiGuard\ApiGuard.csproj", "{12D12791-64BF-405C-BD76-E7E3828777E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGuard", "ApiGuard\ApiGuard.csproj", "{12D12791-64BF-405C-BD76-E7E3828777E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGuard.TestApi", "ApiGuard.TestApi\ApiGuard.TestApi.csproj", "{D01239F6-4CF4-4695-8A82-AFEE5FC69DC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGuard.TestApi", "ApiGuard.TestApi\ApiGuard.TestApi.csproj", "{D01239F6-4CF4-4695-8A82-AFEE5FC69DC5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7F23B65F-1D0A-4B94-82B4-39ABB794B0A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGuard.Tests", "ApiGuard.Tests\ApiGuard.Tests.csproj", "{5936D7A8-1333-43E2-AC5E-F9D012695B05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGuard.TestApiTests", "ApiGuard.TestApiTests\ApiGuard.TestApiTests.csproj", "{5936D7A8-1333-43E2-AC5E-F9D012695B05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGuard.Tests", "ApiGuard.Tests\ApiGuard.Tests.csproj", "{DDC2278D-B685-4D2A-A071-F5A72C7FF9FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{5936D7A8-1333-43E2-AC5E-F9D012695B05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5936D7A8-1333-43E2-AC5E-F9D012695B05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5936D7A8-1333-43E2-AC5E-F9D012695B05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDC2278D-B685-4D2A-A071-F5A72C7FF9FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDC2278D-B685-4D2A-A071-F5A72C7FF9FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDC2278D-B685-4D2A-A071-F5A72C7FF9FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDC2278D-B685-4D2A-A071-F5A72C7FF9FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

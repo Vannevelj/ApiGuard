@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ApiGuard.Models
 {
@@ -8,7 +6,8 @@ namespace ApiGuard.Models
     {
         public bool IsExactMatch => Differences == 0;
         public int Differences { get; set; }
-        public MyMethod Endpoint { get; set; }
+        public MyMethod ExistingEndpoint { get; set; }
+        public MyMethod ReceivedEndpoint { get; set; }
         public List<SymbolMismatch> SymbolsChanged { get; set; }
     }
 }
