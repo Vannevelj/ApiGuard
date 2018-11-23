@@ -7,9 +7,9 @@ namespace ApiGuard.Domain.Strategies
 {
     internal class ExactEndpointMatchingStrategy : IEndpointMatchingStrategy
     {
-        public EndpointResult GetEndpoint(List<MyMethod> existingEndpoints, MyMethod otherEndpoint)
+        public EndpointResult GetEndpoint(List<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint)
         {
-            var endpoint = existingEndpoints.SingleOrDefault(x => x == otherEndpoint);
+            var endpoint = allEndpointsInNewApi.SingleOrDefault(x => x == existingEndpoint);
             return new EndpointResult
             {
                 ExistingEndpoint = endpoint,

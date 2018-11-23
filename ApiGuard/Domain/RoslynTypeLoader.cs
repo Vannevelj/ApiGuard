@@ -14,10 +14,7 @@ namespace ApiGuard.Domain
     {
         private readonly IRoslynSymbolProvider _roslynSymbolProvider;
 
-        internal RoslynTypeLoader(IRoslynSymbolProvider roslynSymbolProvider)
-        {
-            _roslynSymbolProvider = roslynSymbolProvider;
-        }
+        internal RoslynTypeLoader(IRoslynSymbolProvider roslynSymbolProvider) => _roslynSymbolProvider = roslynSymbolProvider;
 
         public async Task<Api> LoadApi(object input)
         {
@@ -41,11 +38,16 @@ namespace ApiGuard.Domain
 
                 foreach (var parameter in methodSymbol.Parameters)
                 {
-                    var param = new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), parameter.Ordinal);
-                    param.Depth = depth;
+                    var param =
+                        new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), parameter.Ordinal)
+                        {
+                            Depth = depth
+                        };
                     Fill(param, parameter, definingAssembly, 0);
                     endpoint.Parameters.Add(param);
                 }
+
+                Fill(endpoint.ReturnType, methodSymbol.ReturnType, definingAssembly, depth);
 
                 endpoints.Add(endpoint);
             }
@@ -59,7 +61,7 @@ namespace ApiGuard.Domain
             return api;
         }
         
-        private static void Fill(MyType type, INamedTypeSymbol complexObject, IAssemblySymbol definingAssembly, int depth)
+        private static void Fill(MyType type, INamespaceOrTypeSymbol complexObject, IAssemblySymbol definingAssembly, int depth)
         {
             depth++;
             var properties = complexObject.GetMembers().OfType<IPropertySymbol>().ToList();
@@ -80,9 +82,11 @@ namespace ApiGuard.Domain
             var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName).ToList();
             foreach (var method in methods)
             {
-                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1));
-                newElement.Depth = depth;
-                newElement.ParentTypeName = type.Typename;
+                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1))
+                {
+                    Depth = depth,
+                    ParentTypeName = type.Typename
+                };
                 type.NestedElements.Add(newElement);
                 Fill(newElement, method, definingAssembly, depth);
 

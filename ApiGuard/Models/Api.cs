@@ -17,9 +17,9 @@ namespace ApiGuard.Models
 
         public IEnumerable<EndpointResult> GetApiDifferences(Api otherApi)
         {
-            foreach (var endpoint in otherApi.Endpoints)
+            foreach (var endpoint in Endpoints)
             {
-                var result = _endpointMatchingStrategy.GetEndpoint(Endpoints, endpoint);
+                var result = _endpointMatchingStrategy.GetEndpoint(otherApi.Endpoints, endpoint);
                 if (!result.IsExactMatch)
                 {
                     yield return result;

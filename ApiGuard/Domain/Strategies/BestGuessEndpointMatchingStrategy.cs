@@ -7,15 +7,15 @@ namespace ApiGuard.Domain.Strategies
 {
     internal class BestGuessEndpointMatchingStrategy : IEndpointMatchingStrategy
     {
-        public EndpointResult GetEndpoint(List<MyMethod> existingEndpoints, MyMethod newEndpoint)
+        public EndpointResult GetEndpoint(List<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint)
         {
             var endPointResults = new List<EndpointResult>();
 
-            foreach (var existingEndpoint in existingEndpoints)
+            foreach (var newEndpoint in allEndpointsInNewApi)
             {
                 var differences = 0;
                 var symbolsChanged = new List<SymbolMismatch>();
-                Compare(existingEndpoint, newEndpoint, ref differences, symbolsChanged);
+                Compare(existingEndpoint, newEndpoint, ref differences, symbolsChanged, existingEndpoint, newEndpoint);
 
                 endPointResults.Add(new EndpointResult
                 {
@@ -30,12 +30,17 @@ namespace ApiGuard.Domain.Strategies
             return minimalDifference;
         }
 
+        private void AddMismatch(List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol, ref int counter)
+        {
+            counter++;
+            symbols.Add(new SymbolMismatch(expectedSymbol, newSymbol));
+        }
+
         private bool Compare<T>(T existingValue, T newValue, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             if (!EqualityComparer<T>.Default.Equals(existingValue, newValue))
             {
-                counter++;
-                symbols.Add(new SymbolMismatch(expectedSymbol, newSymbol));
+                AddMismatch(symbols, expectedSymbol, newSymbol, ref counter);
                 return false;
             }
 
@@ -44,12 +49,13 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(List<MyType> existingTypes, List<MyType> newTypes, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            if (!Compare(existingTypes.Count, newTypes.Count, ref counter, symbols, expectedSymbol, expectedSymbol))
+            if (existingTypes.Count < newTypes.Count)
             {
+                AddMismatch(symbols, expectedSymbol, newSymbol, ref counter);
                 return;
             }
 
-            for (int i = 0; i < existingTypes.Count; i++)
+            for (var i = 0; i < existingTypes.Count; i++)
             {
                 var type1 = existingTypes[i];
                 var type2 = newTypes[i];
@@ -57,23 +63,24 @@ namespace ApiGuard.Domain.Strategies
             }
         }
 
-        private void Compare(MyType existingType, MyType newType, ref int counter, List<SymbolMismatch> symbols)
+        private void Compare(MyType existingType, MyType newType, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             Compare(existingType.Typename, newType.Typename, ref counter, symbols, existingType, newType);
             Compare(existingType.NestedElements, newType.NestedElements, ref counter, symbols, existingType, newType);
         }
 
-        private void Compare(List<ISymbol> existingSymbol, List<ISymbol> newSymbols, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private void Compare(List<ISymbol> existingSymbols, List<ISymbol> newSymbols, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            if (!Compare(existingSymbol.Count, newSymbols.Count, ref counter, symbols, expectedSymbol, newSymbol))
+            if (newSymbols.Count < existingSymbols.Count)
             {
+                AddMismatch(symbols, expectedSymbol, newSymbol, ref counter);
                 return;
             }
 
-            for (int i = 0; i < existingSymbol.Count; i++)
+            for (var i = 0; i < existingSymbols.Count; i++)
             {
-                var element1 = existingSymbol[i];
-                var element2 = newSymbols[i];
+                var element1 = existingSymbols[i];
+                var element2 = newSymbols[i]; // TODO: better algorithm that searches for the symbol so we are no longer dependent on the same ordering
                 Compare(element1, element2, ref counter, symbols, expectedSymbol, newSymbol);
             }
         }
@@ -84,10 +91,10 @@ namespace ApiGuard.Domain.Strategies
             Compare(existingProperty.Type, newProperty.Type, ref counter, symbols, expectedSymbol, newSymbol);
         }
 
-        private void Compare(MyMethod existingMethod, MyMethod newMethod, ref int counter, List<SymbolMismatch> symbols)
+        private void Compare(MyMethod existingMethod, MyMethod newMethod, ref int counter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             Compare(existingMethod.Name, newMethod.Name, ref counter, symbols, existingMethod, newMethod);
-            Compare(existingMethod.ReturnType, newMethod.ReturnType, ref counter, symbols);
+            Compare(existingMethod.ReturnType, newMethod.ReturnType, ref counter, symbols, existingMethod, newMethod);
             Compare(existingMethod.Parameters, newMethod.Parameters, ref counter, symbols, existingMethod, newMethod);
             Compare(existingMethod.Attributes, newMethod.Attributes, ref counter, symbols, existingMethod, newMethod);
         }
@@ -99,7 +106,7 @@ namespace ApiGuard.Domain.Strategies
                 return;
             }
 
-            for (int i = 0; i < existingParameters.Count; i++)
+            for (var i = 0; i < existingParameters.Count; i++)
             {
                 var param1 = existingParameters[i];
                 var param2 = newParameters[i];

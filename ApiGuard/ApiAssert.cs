@@ -60,12 +60,12 @@ namespace ApiGuard
             }
 
             // TODO: if there is a change in a type in the hierarchy of the method, use that in the error message
-
+            // TODO: use the options
             // The exception to this is when we see a [BETA] or [OBSOLETE] attribute on it
 
             // In a separate project, provide a [BETA] attribute and corresponding Roslyn analyzer so it shows a warning
 
-            // Out of scope:
+            // Nice to have:
             // Protected modifier
             // Fields / Events / Delegates
             // Named arguments
@@ -73,6 +73,7 @@ namespace ApiGuard
             // Automatic pass if there is a major version increase
             // Attribute add/remove
             // Re-ordering members inside a type
+            // adding member to interface/abstract class
         }
     }
 }
