@@ -7,6 +7,7 @@ using ApiGuard.Domain.Strategies;
 using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Models;
 using Microsoft.CodeAnalysis;
+using ISymbol = Microsoft.CodeAnalysis.ISymbol;
 
 namespace ApiGuard.Domain
 {
@@ -29,17 +30,18 @@ namespace ApiGuard.Domain
             foreach (var methodSymbol in apiSymbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName))
             {
                 var endpoint = new MyMethod(
-                    methodSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                    new MyType(methodSymbol.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1))
+                    methodSymbol.Name,
+                    new MyType(GetName(methodSymbol.ReturnType), depth + 1))
                 {
-                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth)).ToList(),
+                    Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(GetName(x), depth)).ToList(),
                     Depth = depth,
+                    ParentTypeName = GetName(apiSymbol)
                 };
 
                 foreach (var parameter in methodSymbol.Parameters)
                 {
                     var param =
-                        new MyParameter(new MyType(parameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), parameter.Ordinal)
+                        new MyParameter(new MyType(GetName(parameter.Type), depth + 1), parameter.Ordinal)
                         {
                             Depth = depth
                         };
@@ -54,7 +56,7 @@ namespace ApiGuard.Domain
 
             var api = new Api(new BestGuessEndpointMatchingStrategy())
             {
-                TypeName = apiSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+                TypeName = GetName(apiSymbol),
                 Endpoints = endpoints
             };
 
@@ -70,7 +72,7 @@ namespace ApiGuard.Domain
                 var newElement = new MyProperty
                 {
                     Name = property.Name,
-                    Type = new MyType(property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1),
+                    Type = new MyType(GetName(property.Type), depth + 1),
                     Depth = depth,
                     ParentTypeName = type.Typename
                 };
@@ -82,7 +84,7 @@ namespace ApiGuard.Domain
             var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName).ToList();
             foreach (var method in methods)
             {
-                var newElement = new MyMethod(method.Name, new MyType(method.ReturnType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1))
+                var newElement = new MyMethod(method.Name, new MyType(GetName(method.ReturnType), depth + 1))
                 {
                     Depth = depth,
                     ParentTypeName = type.Typename
@@ -92,7 +94,7 @@ namespace ApiGuard.Domain
 
                 foreach (var methodParameter in method.Parameters)
                 {
-                    var newParameter = new MyParameter(new MyType(methodParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), depth + 1), methodParameter.Ordinal);
+                    var newParameter = new MyParameter(new MyType(GetName(methodParameter.Type), depth + 1), methodParameter.Ordinal);
                     newElement.Depth = depth;
                     newElement.Parameters.Add(newParameter);
                     Fill(newParameter, methodParameter, definingAssembly, depth);
@@ -135,5 +137,7 @@ namespace ApiGuard.Domain
                 Fill(param.Type, classType, definingAssembly, depth);
             }
         }
+
+        private static string GetName(ITypeSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);
     }
 }

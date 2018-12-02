@@ -16,10 +16,16 @@ namespace ApiGuard.Domain
 
             foreach (var endpointResult in originalApi.GetApiDifferences(newApi))
             {
+                // The API has no relevant endpoints
+                if (endpointResult.ReceivedEndpoint == null)
+                {
+                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
+                }
+
                 var differentEndpointDefinition = endpointResult.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(endpointResult.ExistingEndpoint));
                 if (differentEndpointDefinition != null)
                 {
-                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint, newApi.TypeName);
+                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
                 }
 
                 var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();

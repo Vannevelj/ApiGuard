@@ -7,6 +7,6 @@ namespace ApiGuard.Models
         public bool IsExactMatch => SymbolsChanged.Count == 0;
         public MyMethod ExistingEndpoint { get; set; }
         public MyMethod ReceivedEndpoint { get; set; }
-        public List<SymbolMismatch> SymbolsChanged { get; set; }
+        public List<SymbolMismatch> SymbolsChanged { get; set; } = new List<SymbolMismatch>();
     }
 }

@@ -54,7 +54,7 @@ public class MyNewApi
         }
 
         [Fact]
-        public async Task ApiComparer_EndpointRemoved()
+        public async Task ApiComparer_EndpointRemoved_SingleEndpoint()
         {
             var originalApi = @"
 public class MyApi
@@ -72,7 +72,7 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint FirstMethod() on the interface of API MyApi", ex.Message);
+            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
         }
 
         [Fact]
@@ -94,7 +94,7 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint FirstMethod(int, string) on the interface of API MyApi", ex.Message);
+            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod(int, string)", ex.Message);
         }
 
         [Fact]
@@ -117,7 +117,7 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint FirstMethod() on the interface of API MyApi", ex.Message);
+            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Endpoint FirstMethod() on MyApi is now defined as NewFirstMethod()", ex.Message);
+            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
         }
 
         [Fact]
@@ -165,7 +165,73 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Endpoint FirstMethod() on MyApi is now defined as NewFirstMethod()", ex.Message);
+            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ParameterChanged_ComplexObject_NameChanged()
+        {
+            var originalApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public string X { get; set; }
+}
+";
+
+            var newApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public string Y { get; set; }
+}
+";
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Args.X (string) but received Args.Y (string)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ParameterChanged_ComplexObject_TypeChanged()
+        {
+            var originalApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public string X { get; set; }
+}
+";
+
+            var newApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public int X { get; set; }
+}
+";
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Args.X (string) but received Args.X (int)", ex.Message);
         }
     }
 }
