@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ApiGuard.Models;
+﻿using ApiGuard.Models;
 
 namespace ApiGuard.Exceptions
 {

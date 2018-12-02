@@ -34,30 +34,8 @@ namespace ApiGuard
 
             var existingApi = projectResolver.ReadApiFromFile(projectInfo, type);
             
-            if (existingApi.TypeName != api.TypeName)
-            {
-                throw new ApiNotFoundException(existingApi.TypeName);
-            }
-
-            foreach (var endpointResult in existingApi.GetApiDifferences(api))
-            {
-                if (endpointResult.ExistingEndpoint == null)
-                {
-                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint, api.TypeName);
-                }
-
-                if (!endpointResult.IsExactMatch)
-                {
-                    var differentEndpointDefinition = endpointResult.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(endpointResult.ExistingEndpoint));
-                    if (differentEndpointDefinition != null)
-                    {
-                        throw new EndpointMismatchException(endpointResult.ReceivedEndpoint, endpointResult.ExistingEndpoint, api.TypeName);
-                    }
-
-                    var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
-                    throw new DefinitionMismatchException(innerMostMismatch);
-                }
-            }
+            var comparer = new ApiComparer();
+            comparer.Compare(existingApi, api);
 
             // TODO: if there is a change in a type in the hierarchy of the method, use that in the error message
             // TODO: use the options

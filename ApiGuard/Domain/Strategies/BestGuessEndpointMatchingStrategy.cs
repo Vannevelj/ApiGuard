@@ -21,12 +21,11 @@ namespace ApiGuard.Domain.Strategies
                 {
                     ExistingEndpoint = existingEndpoint,
                     ReceivedEndpoint = newEndpoint,
-                    Differences = differences,
                     SymbolsChanged = symbolsChanged
                 });
             }
 
-            var minimalDifference = endPointResults.OrderBy(x => x.Differences).First();
+            var minimalDifference = endPointResults.OrderBy(x => x.SymbolsChanged.Count).First();
             return minimalDifference;
         }
 

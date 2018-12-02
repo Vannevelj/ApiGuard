@@ -13,7 +13,6 @@ namespace ApiGuard.Domain.Strategies
             return new EndpointResult
             {
                 ExistingEndpoint = endpoint,
-                Differences = 0,
             };
         }
     }
