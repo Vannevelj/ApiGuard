@@ -107,14 +107,21 @@ namespace ApiGuard.Domain.Strategies
                     default:
                         throw new ArgumentException($"Unsupported element: {element1.GetType()}");
                 }
-                Compare(element1, element2, symbols, expectedSymbol, newSymbol);
             }
         }
 
         private void Compare(MyProperty existingProperty, MyProperty newProperty, List<SymbolMismatch> symbols)
         {
             Compare(existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty);
-            Compare(existingProperty.Type, newProperty.Type, symbols, existingProperty, newProperty);
+
+            if (existingProperty.Type.NestedElements.Any())
+            {
+                Compare(existingProperty.Type, newProperty.Type, symbols);
+            }
+            else
+            {
+                Compare(existingProperty.Type, newProperty.Type, symbols, existingProperty, newProperty);
+            }
         }
 
         private void Compare(MyMethod existingMethod, MyMethod newMethod, List<SymbolMismatch> symbols)
