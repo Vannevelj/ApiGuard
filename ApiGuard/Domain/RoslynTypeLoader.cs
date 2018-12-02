@@ -21,12 +21,14 @@ namespace ApiGuard.Domain
         {
             var apiSymbol = await _roslynSymbolProvider.GetApiClassSymbol(input);
             var definingAssembly = apiSymbol.ContainingAssembly;
+
+            var topSymbol = new MyType(GetName(apiSymbol), 0);
             
             // For each method create an entry (Endpoint)
             // Each Endpoint contains the name of the method, return type and its arguments as well as targeted attributes
             // If the Type is a complex object, we repeat the process for that object but also include properties
             var endpoints = new List<MyMethod>();
-            var depth = 0;
+            var depth = 1;
             foreach (var methodSymbol in apiSymbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName))
             {
                 var endpoint = new MyMethod(
@@ -35,7 +37,7 @@ namespace ApiGuard.Domain
                 {
                     Attributes = methodSymbol.GetAttributes().Select(x => x.AttributeClass).Select(x => new MyType(GetName(x), depth)).ToList(),
                     Depth = depth,
-                    ParentTypeName = GetName(apiSymbol)
+                    Parent = topSymbol
                 };
 
                 foreach (var parameter in methodSymbol.Parameters)
@@ -45,7 +47,7 @@ namespace ApiGuard.Domain
                         {
                             Depth = depth
                         };
-                    Fill(param, parameter, definingAssembly, 0);
+                    Fill(param, parameter, definingAssembly, depth);
                     endpoint.Parameters.Add(param);
                 }
 
@@ -74,20 +76,20 @@ namespace ApiGuard.Domain
                     Name = property.Name,
                     Type = new MyType(GetName(property.Type), depth + 1),
                     Depth = depth,
-                    ParentTypeName = type.Typename
+                    Parent = type
                 };
 
                 type.NestedElements.Add(newElement);
                 Fill(newElement, property, definingAssembly, depth);
             }
 
-            var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName).ToList();
+            var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName && !x.ContainingNamespace.Name.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)).ToList();
             foreach (var method in methods)
             {
                 var newElement = new MyMethod(method.Name, new MyType(GetName(method.ReturnType), depth + 1))
                 {
                     Depth = depth,
-                    ParentTypeName = type.Typename
+                    Parent = type
                 };
                 type.NestedElements.Add(newElement);
                 Fill(newElement, method, definingAssembly, depth);

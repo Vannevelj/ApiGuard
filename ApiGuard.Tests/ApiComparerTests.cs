@@ -233,5 +233,48 @@ public class Args
             Assert.IsType<DefinitionMismatchException>(ex);
             Assert.Equal("A mismatch on the API was found. Expected Args.X (string) but received Args.X (int)", ex.Message);
         }
+
+        [Fact]
+        public async Task ApiComparer_ParameterChanged_NestedComplexObject_TypeChanged()
+        {
+            var originalApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public Opts Options { get; set; }
+}
+
+public class Opts
+{
+    public string X { get; set; }
+}
+";
+
+            var newApi = @"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public class Args
+{
+    public Opts Options { get; set; }
+}
+
+public class Opts
+{
+    public int X { get; set; }
+}
+";
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Opts.X (string) but received Opts.X (int)", ex.Message);
+        }
     }
 }

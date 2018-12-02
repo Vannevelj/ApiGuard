@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Models;
@@ -14,7 +15,7 @@ namespace ApiGuard.Domain.Strategies
             foreach (var newEndpoint in allEndpointsInNewApi)
             {
                 var symbolsChanged = new List<SymbolMismatch>();
-                Compare(existingEndpoint, newEndpoint, symbolsChanged, existingEndpoint, newEndpoint);
+                Compare(existingEndpoint, newEndpoint, symbolsChanged);
 
                 endPointResults.Add(new EndpointResult
                 {
@@ -73,9 +74,9 @@ namespace ApiGuard.Domain.Strategies
             }
         }
 
-        private void Compare(MyType existingType, MyType newType, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private void Compare(MyType existingType, MyType newType, List<SymbolMismatch> symbols)
         {
-            Compare(existingType.Typename, newType.Typename, symbols, existingType, newType);
+            Compare(existingType.Name, newType.Name, symbols, existingType, newType);
             Compare(existingType.NestedElements, newType.NestedElements, symbols, existingType, newType);
         }
 
@@ -91,20 +92,35 @@ namespace ApiGuard.Domain.Strategies
             {
                 var element1 = existingSymbols[i];
                 var element2 = newSymbols[i]; // TODO: better algorithm that searches for the symbol so we are no longer dependent on the same ordering
+
+                switch (element1)
+                {
+                    case MyProperty firstProperty:
+                        Compare(firstProperty, (MyProperty) element2, symbols);
+                        break;
+                    case MyMethod firstMethod:
+                        Compare(firstMethod, (MyMethod) element2, symbols);
+                        break;
+                    case MyParameter firstParameter:
+                        Compare(firstParameter, (MyParameter) element2, symbols, element1.Parent, element2.Parent);
+                        break;
+                    default:
+                        throw new ArgumentException($"Unsupported element: {element1.GetType()}");
+                }
                 Compare(element1, element2, symbols, expectedSymbol, newSymbol);
             }
         }
 
-        private void Compare(MyProperty existingProperty, MyProperty newProperty, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private void Compare(MyProperty existingProperty, MyProperty newProperty, List<SymbolMismatch> symbols)
         {
-            Compare(existingProperty.Name, newProperty.Name, symbols, expectedSymbol, newSymbol);
-            Compare(existingProperty.Type, newProperty.Type, symbols, expectedSymbol, newSymbol);
+            Compare(existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty);
+            Compare(existingProperty.Type, newProperty.Type, symbols, existingProperty, newProperty);
         }
 
-        private void Compare(MyMethod existingMethod, MyMethod newMethod, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private void Compare(MyMethod existingMethod, MyMethod newMethod, List<SymbolMismatch> symbols)
         {
             Compare(existingMethod.Name, newMethod.Name, symbols, existingMethod, newMethod);
-            Compare(existingMethod.ReturnType, newMethod.ReturnType, symbols, existingMethod, newMethod);
+            Compare(existingMethod.ReturnType, newMethod.ReturnType, symbols);
             Compare(existingMethod.Parameters, newMethod.Parameters, symbols, existingMethod, newMethod);
             Compare(existingMethod.Attributes, newMethod.Attributes, symbols, existingMethod, newMethod);
         }
@@ -127,7 +143,7 @@ namespace ApiGuard.Domain.Strategies
         private void Compare(MyParameter existingParameter, MyParameter newParameter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             Compare(existingParameter.Ordinal, newParameter.Ordinal, symbols, expectedSymbol, newSymbol);
-            Compare(existingParameter.Type, newParameter.Type, symbols, expectedSymbol, newSymbol);
+            Compare(existingParameter.Type, newParameter.Type, symbols);
         }
     }
 }

@@ -8,6 +8,8 @@ namespace ApiGuard.Models
         public MyType Type { get; set; }
         public int Ordinal { get; set; }
         public int Depth { get; set; }
+        public string Name { get; set; }
+        public ISymbol Parent { get; set; }
 
         public MyParameter(MyType type, int ordinal)
         {

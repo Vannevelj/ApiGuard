@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace ApiGuard.Models
 {
-    internal class MyMethod : IChildSymbol, IEquatable<MyMethod>
+    internal class MyMethod : IEquatable<MyMethod>, ISymbol
     {
-        public string ParentTypeName { get; set; }
         public MyType ReturnType { get; set; }
         public string Name { get; set; }
         public int Depth { get; set; }
+        public ISymbol Parent { get; set; }
         public List<MyType> Attributes { get; set; } = new List<MyType>();
         public List<MyParameter> Parameters { get; set; } = new List<MyParameter>();
 
@@ -69,6 +69,6 @@ namespace ApiGuard.Models
         public static bool operator !=(MyMethod method1, MyMethod method2) => !(method1 == method2);
 
         public override string ToString()
-            => $"{ReturnType.Typename} {ParentTypeName}.{Name}({string.Join(", ", Parameters.OrderBy(x => x.Ordinal).Select(x => x.Type.Typename))})";
+            => $"{ReturnType.Name} {Parent}.{Name}({string.Join(", ", Parameters.OrderBy(x => x.Ordinal).Select(x => x.Type.Name))})";
     }
 }
