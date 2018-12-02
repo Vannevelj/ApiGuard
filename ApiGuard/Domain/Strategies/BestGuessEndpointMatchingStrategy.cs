@@ -113,6 +113,7 @@ namespace ApiGuard.Domain.Strategies
         private void Compare(MyProperty existingProperty, MyProperty newProperty, List<SymbolMismatch> symbols)
         {
             Compare(existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty);
+            Compare(existingProperty.Attributes, newProperty.Attributes, symbols, existingProperty, newProperty);
 
             if (existingProperty.Type.NestedElements.Any())
             {
@@ -139,6 +140,7 @@ namespace ApiGuard.Domain.Strategies
                 return;
             }
 
+            // TODO remove reliance on ordering
             for (var i = 0; i < existingParameters.Count; i++)
             {
                 var param1 = existingParameters[i];
@@ -151,6 +153,34 @@ namespace ApiGuard.Domain.Strategies
         {
             Compare(existingParameter.Ordinal, newParameter.Ordinal, symbols, expectedSymbol, newSymbol);
             Compare(existingParameter.Type, newParameter.Type, symbols);
+        }
+
+        private void Compare(List<MyAttribute> existingAttributes, List<MyAttribute> newAttributes, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        {
+            if (newAttributes.Count < existingAttributes.Count)
+            {
+                AddMismatch(symbols, expectedSymbol, newSymbol);
+                return;
+            }
+
+            // TODO remove reliance on ordering
+            for (var i = 0; i < existingAttributes.Count; i++)
+            {
+                var attr1 = existingAttributes[i];
+                var attr2 = newAttributes[i];
+                Compare(attr1, attr2, symbols, attr1, attr2);
+            }
+        }
+
+        private void Compare(MyAttribute existingAttribute, MyAttribute newAttribute, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        {
+            Compare(existingAttribute.Name, newAttribute.Name, symbols, expectedSymbol, newSymbol);
+
+            foreach (var value in existingAttribute.Values)
+            {
+                var correspondingAttribute = newAttribute.Values.FirstOrDefault(x => x.Key == value.Key);
+                Compare(value.Value, correspondingAttribute.Value, symbols, expectedSymbol, newSymbol);
+            }
         }
     }
 }

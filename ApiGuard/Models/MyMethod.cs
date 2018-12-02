@@ -10,7 +10,7 @@ namespace ApiGuard.Models
         public string Name { get; set; }
         public int Depth { get; set; }
         public ISymbol Parent { get; set; }
-        public List<MyType> Attributes { get; set; } = new List<MyType>();
+        public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public List<MyParameter> Parameters { get; set; } = new List<MyParameter>();
 
         public MyMethod(string name, MyType returnType)

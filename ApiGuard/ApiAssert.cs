@@ -52,6 +52,11 @@ namespace ApiGuard
             // Attribute add/remove
             // Re-ordering members inside a type
             // adding member to interface/abstract class
+            // Attributes on types
+            // Attributes on methods / properties
+            // Supporting constructor arguments on attributes
+            // Multiple public types per file
+            // custom struct as type
         }
     }
 }

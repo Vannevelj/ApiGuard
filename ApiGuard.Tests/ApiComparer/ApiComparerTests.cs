@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ApiGuard.Domain;
 using ApiGuard.Domain.Interfaces;
 using ApiGuard.Domain.Strategies;
@@ -9,11 +6,11 @@ using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using Xunit;
 
-namespace ApiGuard.Tests
+namespace ApiGuard.Tests.ApiComparer
 {
-    public class ApiComparerTests
+    public partial class ApiComparerTests : BaseTest
     {
-        private readonly IApiComparer _apiComparer = new ApiComparer();
+        private readonly IApiComparer _apiComparer = new Domain.ApiComparer();
 
         private async Task<Api> GetApi(string source)
         {
@@ -33,19 +30,19 @@ namespace ApiGuard.Tests
         [Fact]
         public async Task ApiComparer_DifferentApi()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyNewApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
             
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -56,18 +53,18 @@ public class MyNewApi
         [Fact]
         public async Task ApiComparer_EndpointRemoved_SingleEndpoint()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -78,18 +75,18 @@ public class MyApi
         [Fact]
         public async Task ApiComparer_EndpointRemoved_WithParameters()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(int x, string y) { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -100,19 +97,19 @@ public class MyApi
         [Fact]
         public async Task ApiComparer_EndpointRemoved_WithOtherEndpoints()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public void SomeOtherMethod() { }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -123,19 +120,19 @@ public class MyApi
         [Fact]
         public async Task ApiComparer_EndpointRenamed()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public int NewFirstMethod() { return 32; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -146,21 +143,21 @@ public class MyApi
         [Fact]
         public async Task ApiComparer_EndpointRenamed_WithOtherEndpoints()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod() { return 32; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public int NewFirstMethod() { return 32; }
     public void SomeOtherMethod() { }
     public string YetAnotherMethod(string a) { return null; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -171,7 +168,7 @@ public class MyApi
         [Fact]
         public async Task ApiComparer_ParameterChanged_ComplexObject_NameChanged()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -181,9 +178,9 @@ public class Args
 {
     public string X { get; set; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -193,7 +190,7 @@ public class Args
 {
     public string Y { get; set; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -204,7 +201,7 @@ public class Args
         [Fact]
         public async Task ApiComparer_ParameterChanged_ComplexObject_TypeChanged()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -214,9 +211,9 @@ public class Args
 {
     public string X { get; set; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -226,7 +223,7 @@ public class Args
 {
     public int X { get; set; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -237,7 +234,7 @@ public class Args
         [Fact]
         public async Task ApiComparer_ParameterChanged_NestedComplexObject_TypeChanged()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -252,9 +249,9 @@ public class Opts
 {
     public string X { get; set; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public int FirstMethod(Args a) { return 32; }
@@ -269,7 +266,7 @@ public class Opts
 {
     public int X { get; set; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -280,7 +277,7 @@ public class Opts
         [Fact]
         public async Task ApiComparer_EndpointReturnTypeChanged_NestedComplexObject_TypeChanged()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public Result FirstMethod() { return null; }
@@ -295,9 +292,9 @@ public class Data
 {
     public string X { get; set; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public Result FirstMethod() { return null; }
@@ -312,7 +309,7 @@ public class Data
 {
     public int X { get; set; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
@@ -323,7 +320,7 @@ public class Data
         [Fact]
         public async Task ApiComparer_EndpointReturnTypeChanged_ComplexObject_TypeChanged()
         {
-            var originalApi = @"
+            var originalApi = GetApiFile(@"
 public class MyApi
 {
     public Result FirstMethod() { return null; }
@@ -333,9 +330,9 @@ public class Result
 {
     public string X { get; set; }
 }
-";
+");
 
-            var newApi = @"
+            var newApi = GetApiFile(@"
 public class MyApi
 {
     public Result FirstMethod() { return null; }
@@ -345,7 +342,7 @@ public class Result
 {
     public double X { get; set; }
 }
-";
+");
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 

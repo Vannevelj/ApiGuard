@@ -23,6 +23,11 @@ namespace ApiGuard.Domain
                 }
 
                 var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
+                if (innerMostMismatch.Received is MyAttribute newAttribute)
+                {
+                    throw new AttributeMismatchException(newAttribute);
+                }
+
                 throw new DefinitionMismatchException(innerMostMismatch);
             }
         }

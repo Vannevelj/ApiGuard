@@ -9,6 +9,13 @@ namespace ApiGuard.Models
         public string Name { get; set; }
         public ISymbol Parent { get; set; }
         public int Depth { get; set; }
+        public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
+
+        public MyProperty(string name, MyType type)
+        {
+            Name = name;
+            Type = type;
+        }
 
         public override bool Equals(object obj) => Equals(obj as MyProperty);
         public bool Equals(MyProperty other)
