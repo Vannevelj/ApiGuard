@@ -94,12 +94,10 @@ namespace ApiGuard.Domain
                 Parent = parent
             };
 
-            foreach (var methodParameter in methodSymbol.Parameters)
+            foreach (var parameterSymbol in methodSymbol.Parameters)
             {
-                var newParameter = new MyParameter(new MyType(GetName(methodParameter.Type), depth + 1), methodParameter.Ordinal);
-                method.Depth = depth;
-                method.Parameters.Add(newParameter);
-                Fill(newParameter, methodParameter, definingAssembly, depth);
+                var parameter = GetParameter(parameterSymbol, definingAssembly, method, depth);
+                method.Parameters.Add(parameter);
             }
 
             var returnType = methodSymbol.ReturnType;
@@ -136,16 +134,25 @@ namespace ApiGuard.Domain
             return attribute;
         }
 
-        private static void Fill(MyParameter param, IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, int depth)
+        private static MyParameter GetParameter(IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
         {
+            var parameter = new MyParameter(new MyType(GetName(parameterSymbol.Type), depth + 1), parameterSymbol.Ordinal)
+            {
+                Parent = parent,
+                Depth = depth,
+                Name = parameterSymbol.Name,
+            };
+
             var parameterType = parameterSymbol.Type;
             if (Equals(parameterType.ContainingAssembly?.Name, definingAssembly.Name) && !parameterType.IsValueType)
             {
                 // The parameter is a custom object
                 // Extract properties and methods
                 var classType = (INamedTypeSymbol)parameterType;
-                Fill(param.Type, classType, definingAssembly, depth);
+                Fill(parameter.Type, classType, definingAssembly, depth);
             }
+
+            return parameter;
         }
 
         private static string GetName(ITypeSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);

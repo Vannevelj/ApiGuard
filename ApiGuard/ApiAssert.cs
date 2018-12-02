@@ -46,7 +46,7 @@ namespace ApiGuard
             // Nice to have:
             // Protected modifier
             // Fields / Events / Delegates
-            // Named arguments
+            // Parameter name
             // Datamember attributes on complex objects
             // Automatic pass if there is a major version increase
             // Attribute add/remove
