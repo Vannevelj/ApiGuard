@@ -8,5 +8,7 @@ namespace ApiGuard.Models
         public MyMethod ExistingEndpoint { get; set; }
         public MyMethod ReceivedEndpoint { get; set; }
         public List<SymbolMismatch> SymbolsChanged { get; set; } = new List<SymbolMismatch>();
+
+        public bool IsSameEndpoint => ReceivedEndpoint != null && ReceivedEndpoint.Name == ExistingEndpoint.Name;
     }
 }

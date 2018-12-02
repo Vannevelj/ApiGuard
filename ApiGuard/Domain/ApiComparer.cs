@@ -17,13 +17,7 @@ namespace ApiGuard.Domain
             foreach (var endpointResult in originalApi.GetApiDifferences(newApi))
             {
                 // The API has no relevant endpoints
-                if (endpointResult.ReceivedEndpoint == null)
-                {
-                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
-                }
-
-                var differentEndpointDefinition = endpointResult.SymbolsChanged.SingleOrDefault(x => x.Received.Equals(endpointResult.ExistingEndpoint));
-                if (differentEndpointDefinition != null)
+                if (!endpointResult.IsSameEndpoint)
                 {
                     throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
                 }
