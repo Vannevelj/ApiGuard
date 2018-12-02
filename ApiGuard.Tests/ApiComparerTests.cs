@@ -276,5 +276,81 @@ public class Opts
             Assert.IsType<DefinitionMismatchException>(ex);
             Assert.Equal("A mismatch on the API was found. Expected Opts.X (string) but received Opts.X (int)", ex.Message);
         }
+
+        [Fact]
+        public async Task ApiComparer_EndpointReturnTypeChanged_NestedComplexObject_TypeChanged()
+        {
+            var originalApi = @"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public Data Data { get; set; }
+}
+
+public class Data
+{
+    public string X { get; set; }
+}
+";
+
+            var newApi = @"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public Data Data { get; set; }
+}
+
+public class Data
+{
+    public int X { get; set; }
+}
+";
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Data.X (string) but received Data.X (int)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_EndpointReturnTypeChanged_ComplexObject_TypeChanged()
+        {
+            var originalApi = @"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public string X { get; set; }
+}
+";
+
+            var newApi = @"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public double X { get; set; }
+}
+";
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Result.X (string) but received Result.X (double)", ex.Message);
+        }
     }
 }
