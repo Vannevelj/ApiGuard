@@ -10,6 +10,7 @@ namespace ApiGuard.Models
         public string Name { get; set; }
         public ISymbol Parent { get; set; }
         public List<ISymbol> NestedElements { get; set; } = new List<ISymbol>();
+        public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
 
         public MyType(string typename, int depth)
         {

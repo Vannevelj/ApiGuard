@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ApiGuard.Domain.Interfaces;
+using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Exceptions;
 using ApiGuard.Models;
 
@@ -7,14 +8,21 @@ namespace ApiGuard.Domain
 {
     internal class ApiComparer : IApiComparer
     {
+        private readonly IEndpointMatchingStrategy _endpointMatchingStrategy;
+
+        public ApiComparer(IEndpointMatchingStrategy endpointMatchingStrategy)
+        {
+            _endpointMatchingStrategy = endpointMatchingStrategy;
+        }
+
         public void Compare(Api originalApi, Api newApi)
         {
-            if (originalApi.TypeName != newApi.TypeName)
+            if (originalApi.Name != newApi.Name)
             {
-                throw new ApiNotFoundException(originalApi.TypeName);
+                throw new ApiNotFoundException(originalApi.Name);
             }
 
-            foreach (var endpointResult in originalApi.GetApiDifferences(newApi))
+            foreach (var endpointResult in originalApi.GetEndpointDifferences(newApi, _endpointMatchingStrategy))
             {
                 // The API has no relevant endpoints
                 if (!endpointResult.IsSameEndpoint)
@@ -22,10 +30,11 @@ namespace ApiGuard.Domain
                     throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
                 }
 
-                var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received.Depth).First();
-                if (innerMostMismatch.Received is MyAttribute newAttribute)
+                var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received?.Depth ?? x.Expected?.Depth).First();
+                if (innerMostMismatch.Received is MyAttribute || innerMostMismatch.Expected is MyAttribute)
                 {
-                    throw new AttributeMismatchException(newAttribute);
+                    var attribute = (MyAttribute) (innerMostMismatch.Received ?? innerMostMismatch.Expected);
+                    throw new AttributeMismatchException(attribute);
                 }
 
                 throw new DefinitionMismatchException(innerMostMismatch);

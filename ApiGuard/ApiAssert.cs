@@ -34,7 +34,8 @@ namespace ApiGuard
 
             var existingApi = projectResolver.ReadApiFromFile(projectInfo, type);
             
-            var comparer = new ApiComparer();
+            var compareStrategy = new BestGuessEndpointMatchingStrategy();
+            var comparer = new ApiComparer(compareStrategy);
             comparer.Compare(existingApi, api);
 
             // TODO: if there is a change in a type in the hierarchy of the method, use that in the error message
@@ -49,11 +50,9 @@ namespace ApiGuard
             // Parameter name
             // Datamember attributes on complex objects
             // Automatic pass if there is a major version increase
-            // Attribute add/remove
             // Re-ordering members inside a type
             // adding member to interface/abstract class
             // Attributes on types
-            // Attributes on methods / properties
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type

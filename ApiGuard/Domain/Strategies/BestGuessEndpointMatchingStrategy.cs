@@ -78,6 +78,7 @@ namespace ApiGuard.Domain.Strategies
         {
             Compare(existingType.Name, newType.Name, symbols, existingType, newType);
             Compare(existingType.NestedElements, newType.NestedElements, symbols, existingType, newType);
+            Compare(existingType.Attributes, newType.Attributes, symbols, existingType, newType);
         }
 
         private void Compare(List<ISymbol> existingSymbols, List<ISymbol> newSymbols, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
@@ -140,7 +141,7 @@ namespace ApiGuard.Domain.Strategies
                 return;
             }
 
-            // TODO remove reliance on ordering
+            // We rely on ordering since that is part of the API for methods
             for (var i = 0; i < existingParameters.Count; i++)
             {
                 var param1 = existingParameters[i];
@@ -157,17 +158,31 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(List<MyAttribute> existingAttributes, List<MyAttribute> newAttributes, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            if (newAttributes.Count < existingAttributes.Count)
+            var addedAttributes = newAttributes.Where(n => !existingAttributes.Select(e => e.Name).Contains(n.Name)).ToList();
+            var removedAttributes = existingAttributes.Where(e => !newAttributes.Select(n => n.Name).Contains(e.Name)).ToList();
+
+            if (removedAttributes.Any())
+            {
+                removedAttributes.ForEach(x => AddMismatch(symbols, x, null));
+                return;
+            }
+
+            if (addedAttributes.Any())
+            {
+                addedAttributes.ForEach(x => AddMismatch(symbols, null, x));
+                return;
+            }
+
+            if (newAttributes.Count != existingAttributes.Count)
             {
                 AddMismatch(symbols, expectedSymbol, newSymbol);
                 return;
             }
 
-            // TODO remove reliance on ordering
             for (var i = 0; i < existingAttributes.Count; i++)
             {
                 var attr1 = existingAttributes[i];
-                var attr2 = newAttributes[i];
+                var attr2 = newAttributes.First(x => x.Name == attr1.Name);
                 Compare(attr1, attr2, symbols, attr1, attr2);
             }
         }
@@ -175,6 +190,12 @@ namespace ApiGuard.Domain.Strategies
         private void Compare(MyAttribute existingAttribute, MyAttribute newAttribute, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             Compare(existingAttribute.Name, newAttribute.Name, symbols, expectedSymbol, newSymbol);
+
+            if (newAttribute.Values.Count != existingAttribute.Values.Count)
+            {
+                AddMismatch(symbols, expectedSymbol, newSymbol);
+                return;
+            }
 
             foreach (var value in existingAttribute.Values)
             {

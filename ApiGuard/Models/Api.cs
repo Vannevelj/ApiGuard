@@ -6,20 +6,19 @@ using ApiGuard.Domain.Strategies.Interfaces;
 [assembly: InternalsVisibleTo("ApiGuard.Tests")]
 namespace ApiGuard.Models
 {
-    internal class Api
+    internal class Api : MyType
     {
-        private readonly IEndpointMatchingStrategy _endpointMatchingStrategy;
+        public Api(string typename) : base(typename, 0)
+        {
+        }
 
-        public Api(IEndpointMatchingStrategy endpointMatchingStrategy) => _endpointMatchingStrategy = endpointMatchingStrategy;
+        public List<MyMethod> Endpoints => NestedElements.OfType<MyMethod>().ToList();
 
-        public string TypeName { get; set; }
-        public List<MyMethod> Endpoints { get; set; } = new List<MyMethod>();
-
-        public IEnumerable<EndpointResult> GetApiDifferences(Api otherApi)
+        public IEnumerable<EndpointResult> GetEndpointDifferences(Api otherApi, IEndpointMatchingStrategy endpointMatchingStrategy)
         {
             foreach (var endpoint in Endpoints)
             {
-                var result = _endpointMatchingStrategy.GetEndpoint(otherApi.Endpoints, endpoint);
+                var result = endpointMatchingStrategy.GetEndpoint(otherApi.Endpoints, endpoint);
                 if (!result.IsExactMatch)
                 {
                     yield return result;

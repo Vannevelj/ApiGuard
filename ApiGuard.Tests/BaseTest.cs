@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using ApiGuard.Domain.Strategies;
+using ApiGuard.Models;
 
 namespace ApiGuard.Tests
 {
@@ -23,6 +26,12 @@ namespace Tests
     }}
 }}
 ";
+        }
+
+        internal List<EndpointResult> GetApiDifferences(Api originalApi, Api newApi)
+        {
+            var matchingStrategy = new BestGuessEndpointMatchingStrategy();
+            return originalApi.GetEndpointDifferences(newApi, matchingStrategy).ToList();
         }
     }
 }

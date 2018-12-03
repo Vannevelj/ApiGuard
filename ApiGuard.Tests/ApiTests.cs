@@ -35,7 +35,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -60,7 +60,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -85,7 +85,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -110,7 +110,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -135,7 +135,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -160,7 +160,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Equal(2, differences.Count);
         }
@@ -184,7 +184,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -208,7 +208,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -244,7 +244,7 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -280,7 +280,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -316,7 +316,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -353,7 +353,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -388,7 +388,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -422,7 +422,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -456,7 +456,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -491,7 +491,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -525,7 +525,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -560,7 +560,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -594,7 +594,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -629,7 +629,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
         }
@@ -663,7 +663,7 @@ public class Opts
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -699,7 +699,7 @@ public class NewOptions
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Equal(2, differences.Count);
         }
@@ -735,7 +735,7 @@ public class Args
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -770,7 +770,32 @@ public class Args
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task AttributeRemoved_OnMethod()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    [Obsolete]
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
         }
@@ -805,9 +830,9 @@ public class Args
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Empty(differences);
+            Assert.Single(differences);
         }
 
         [Fact]
@@ -841,9 +866,9 @@ public class Args
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var differences = firstApi.GetApiDifferences(secondApi).ToList();
+            var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Empty(differences);
+            Assert.Single(differences);
         }
     }
 }

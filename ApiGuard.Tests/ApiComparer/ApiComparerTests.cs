@@ -10,7 +10,13 @@ namespace ApiGuard.Tests.ApiComparer
 {
     public partial class ApiComparerTests : BaseTest
     {
-        private readonly IApiComparer _apiComparer = new Domain.ApiComparer();
+        private readonly IApiComparer _apiComparer;
+
+        public ApiComparerTests()
+        {
+            var strategy = new BestGuessEndpointMatchingStrategy();
+            _apiComparer = new Domain.ApiComparer(strategy);
+        }
 
         private async Task<Api> GetApi(string source)
         {

@@ -35,11 +35,8 @@ namespace ApiGuard.Domain
                 endpoints.Add(endpoint);
             }
 
-            var api = new Api(new BestGuessEndpointMatchingStrategy())
-            {
-                TypeName = GetName(apiSymbol),
-                Endpoints = endpoints
-            };
+            var api = new Api(GetName(apiSymbol));
+            api.NestedElements.AddRange(endpoints);
 
             return api;
         }
@@ -59,6 +56,12 @@ namespace ApiGuard.Domain
             {
                 var newElement = GetMethod(method, definingAssembly, type, depth);
                 type.NestedElements.Add(newElement);
+            }
+
+            foreach (var attributeData in complexObject.GetAttributes())
+            {
+                var attribute = GetAttribute(attributeData, type);
+                type.Attributes.Add(attribute);
             }
         }
 
