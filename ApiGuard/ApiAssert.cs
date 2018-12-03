@@ -38,7 +38,6 @@ namespace ApiGuard
             var comparer = new ApiComparer(compareStrategy);
             comparer.Compare(existingApi, api);
 
-            // TODO: if there is a change in a type in the hierarchy of the method, use that in the error message
             // TODO: use the options
             // The exception to this is when we see a [BETA] or [OBSOLETE] attribute on it
 
@@ -56,6 +55,7 @@ namespace ApiGuard
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type
+            // Change Fill to GetType in RoslynTypeLoader
         }
     }
 }

@@ -22,6 +22,11 @@ namespace ApiGuard.Domain
                 throw new ApiNotFoundException(originalApi.Name);
             }
 
+            if (_endpointMatchingStrategy.TryGetChangedApiAttribute(originalApi, newApi, out var apiAttribute))
+            {
+                throw new AttributeMismatchException(apiAttribute);
+            }
+
             foreach (var endpointResult in originalApi.GetEndpointDifferences(newApi, _endpointMatchingStrategy))
             {
                 // The API has no relevant endpoints

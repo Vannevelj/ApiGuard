@@ -42,6 +42,22 @@ namespace ApiGuard.Domain.Strategies
             return minimalDifference;
         }
 
+        public bool TryGetChangedApiAttribute(Api oldApi, Api newApi, out MyAttribute attribute)
+        {
+            var symbols = new List<SymbolMismatch>();
+            Compare(oldApi.Attributes, newApi.Attributes, symbols, oldApi, newApi);
+
+            if (symbols.Any())
+            {
+                var symbolMismatch = symbols.First();
+                attribute = symbolMismatch.Expected as MyAttribute ?? symbolMismatch.Received as MyAttribute;
+                return attribute != null;
+            }
+
+            attribute = null;
+            return false;
+        }
+
         private void AddMismatch(List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             symbols.Add(new SymbolMismatch(expectedSymbol, newSymbol));

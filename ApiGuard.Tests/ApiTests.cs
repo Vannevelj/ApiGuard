@@ -836,6 +836,33 @@ public class Args
         }
 
         [Fact]
+        public async Task AttributeAdded_OnApiType()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+[Obsolete]
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var matchingStrategy = new BestGuessEndpointMatchingStrategy();
+            var hasDifference = matchingStrategy.TryGetChangedApiAttribute(firstApi, secondApi, out var attribute);
+
+            Assert.True(hasDifference);
+            Assert.Equal("ObsoleteAttribute", attribute.Name);
+        }
+
+        [Fact]
         public async Task AttributeValueAdded()
         {
             var originalApi = GetApiFile(@"
