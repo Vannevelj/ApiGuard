@@ -47,15 +47,14 @@ namespace ApiGuard
             // Protected modifier
             // Fields / Events / Delegates
             // Parameter name
-            // Datamember attributes on complex objects
             // Automatic pass if there is a major version increase
             // Re-ordering members inside a type
             // adding member to interface/abstract class
-            // Attributes on types
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type
             // Change Fill to GetType in RoslynTypeLoader
+            // Re-generate the output file if there are changes to the API that aren't breaking
         }
     }
 }

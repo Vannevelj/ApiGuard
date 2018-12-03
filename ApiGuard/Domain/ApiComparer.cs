@@ -42,6 +42,11 @@ namespace ApiGuard.Domain
                     throw new AttributeMismatchException(attribute);
                 }
 
+                if (innerMostMismatch.Received == null)
+                {
+                    throw new ElementRemovedException(innerMostMismatch);
+                }
+
                 throw new DefinitionMismatchException(innerMostMismatch);
             }
         }

@@ -200,8 +200,8 @@ public class Args
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<DefinitionMismatchException>(ex);
-            Assert.Equal("A mismatch on the API was found. Expected Args.X (string) but received Args.Y (string)", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element Args.X (string) was removed", ex.Message);
         }
 
         [Fact]
@@ -354,6 +354,209 @@ public class Result
 
             Assert.IsType<DefinitionMismatchException>(ex);
             Assert.Equal("A mismatch on the API was found. Expected Result.X (string) but received Result.X (double)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_MultipleChangesInSameSubtree_WithPositiveChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public string X { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public string NewProp { get; set; }
+    public int Y { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element Result.X (string) was removed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_MultipleChangesInSameSubtree_WithNegativeChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public string NewProp { get; set; }
+    public string X { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public int Y { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element Result.NewProp (string) was removed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_PropertyRemoved()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public string X { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element Result.X (string) was removed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_MethodRemoved()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+    public void GetResult() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public class Result
+{
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element void Result.GetResult() was removed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_MultipleChangesInDifferentSubtree_WithNegativeChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+    public void SecondMethod() { }
+}
+
+public class Result
+{
+    public string Y { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+    public void SecondMethod(int a) { }
+}
+
+public class Result
+{
+    public int Y { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Result.Y (string) but received Result.Y (int)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_MultipleChangesInDifferentSubtree_WithPositiveChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+    public void SecondMethod() { }
+}
+
+public class Result
+{
+    public string Y { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+    public void SecondMethod(int a) { }
+}
+
+public class Result
+{
+    public string Y { get; set; }
+    public int X { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected void MyApi.SecondMethod() but received void MyApi.SecondMethod(int)", ex.Message);
         }
     }
 }

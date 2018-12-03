@@ -99,9 +99,11 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(List<ISymbol> existingSymbols, List<ISymbol> newSymbols, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            if (newSymbols.Count < existingSymbols.Count)
+            var removedSymbols = existingSymbols.Where(e => !newSymbols.Select(n => n.Name).Contains(e.Name)).ToList();
+
+            if (removedSymbols.Any())
             {
-                AddMismatch(symbols, expectedSymbol, newSymbol);
+                removedSymbols.ForEach(x => AddMismatch(symbols, x, null));
                 return;
             }
 
@@ -186,12 +188,6 @@ namespace ApiGuard.Domain.Strategies
             if (addedAttributes.Any())
             {
                 addedAttributes.ForEach(x => AddMismatch(symbols, null, x));
-                return;
-            }
-
-            if (newAttributes.Count != existingAttributes.Count)
-            {
-                AddMismatch(symbols, expectedSymbol, newSymbol);
                 return;
             }
 

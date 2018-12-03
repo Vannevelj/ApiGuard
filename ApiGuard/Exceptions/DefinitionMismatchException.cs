@@ -10,5 +10,10 @@ namespace ApiGuard.Exceptions
         {
             
         }
+
+        internal DefinitionMismatchException(string message) : base(message)
+        {
+            
+        }
     }
 }
