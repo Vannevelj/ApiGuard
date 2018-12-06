@@ -41,17 +41,17 @@ namespace ApiGuard.Domain
             return File.Exists(documentPath);
         }
 
-        public void WriteApiToFile(ProjectInfo projectInfo, Type type, Api api)
+        public void WriteApiToFile(ProjectInfo projectInfo, Type type, MyType api)
         {
             File.WriteAllText(projectInfo.GetApiFilePath(type), JsonConvert.SerializeObject(api, Formatting.Indented, _serializerSettings));
         }
 
-        public Api ReadApiFromFile(ProjectInfo projectInfo, Type type)
+        public MyType ReadApiFromFile(ProjectInfo projectInfo, Type type)
         {
             try
             {
                 var existingApiJson = File.ReadAllText(projectInfo.GetApiFilePath(type));
-                return JsonConvert.DeserializeObject<Api>(existingApiJson, _serializerSettings);
+                return JsonConvert.DeserializeObject<MyType>(existingApiJson, _serializerSettings);
             }
             catch (Exception e)
             {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("ApiGuard.Tests")]
 namespace ApiGuard.Models
 {
     internal class MyType : IEquatable<MyType>, ISymbol

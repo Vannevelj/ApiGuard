@@ -8,7 +8,7 @@ namespace ApiGuard.Domain.Strategies
 {
     internal class BestGuessEndpointMatchingStrategy : IEndpointMatchingStrategy
     {
-        public EndpointResult GetEndpoint(List<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint)
+        public EndpointResult GetEndpoint(IEnumerable<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint)
         {
             var endPointResults = new List<EndpointResult>();
 
@@ -33,7 +33,7 @@ namespace ApiGuard.Domain.Strategies
                     ReceivedEndpoint = null,
                     SymbolsChanged = new List<SymbolMismatch>
                     {
-                        new SymbolMismatch(existingEndpoint, null)
+                        new SymbolMismatch(MismatchReason.ElementRemoved, existingEndpoint, null)
                     }
                 };
             }
@@ -42,7 +42,7 @@ namespace ApiGuard.Domain.Strategies
             return minimalDifference;
         }
 
-        public bool TryGetChangedApiAttribute(Api oldApi, Api newApi, out MyAttribute attribute)
+        public bool TryGetChangedApiAttribute(MyType oldApi, MyType newApi, out MyAttribute attribute)
         {
             var symbols = new List<SymbolMismatch>();
             Compare(oldApi.Attributes, newApi.Attributes, symbols, oldApi, newApi);
@@ -58,41 +58,25 @@ namespace ApiGuard.Domain.Strategies
             return false;
         }
 
-        private void AddMismatch(List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private void AddMismatch(MismatchReason reason, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            symbols.Add(new SymbolMismatch(expectedSymbol, newSymbol));
+            symbols.Add(new SymbolMismatch(reason, expectedSymbol, newSymbol));
         }
 
-        private bool Compare<T>(T existingValue, T newValue, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
+        private bool Compare<T>(MismatchReason reason, T existingValue, T newValue, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
             if (!EqualityComparer<T>.Default.Equals(existingValue, newValue))
             {
-                AddMismatch(symbols, expectedSymbol, newSymbol);
+                AddMismatch(reason, symbols, expectedSymbol, newSymbol);
                 return false;
             }
 
             return true;
         }
 
-        private void Compare(List<MyType> existingTypes, List<MyType> newTypes, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
-        {
-            if (existingTypes.Count < newTypes.Count)
-            {
-                AddMismatch(symbols, expectedSymbol, newSymbol);
-                return;
-            }
-
-            for (var i = 0; i < existingTypes.Count; i++)
-            {
-                var type1 = existingTypes[i];
-                var type2 = newTypes[i];
-                Compare(type1, type2, symbols, expectedSymbol, expectedSymbol);
-            }
-        }
-
         private void Compare(MyType existingType, MyType newType, List<SymbolMismatch> symbols)
         {
-            Compare(existingType.Name, newType.Name, symbols, existingType, newType);
+            Compare(MismatchReason.TypeChanged, existingType.Name, newType.Name, symbols, existingType, newType);
             Compare(existingType.NestedElements, newType.NestedElements, symbols, existingType, newType);
             Compare(existingType.Attributes, newType.Attributes, symbols, existingType, newType);
         }
@@ -103,7 +87,7 @@ namespace ApiGuard.Domain.Strategies
 
             if (removedSymbols.Any())
             {
-                removedSymbols.ForEach(x => AddMismatch(symbols, x, null));
+                removedSymbols.ForEach(x => AddMismatch(MismatchReason.ElementRemoved, symbols, x, null));
                 return;
             }
 
@@ -131,7 +115,7 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(MyProperty existingProperty, MyProperty newProperty, List<SymbolMismatch> symbols)
         {
-            Compare(existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty);
+            Compare(MismatchReason.ElementRemoved, existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty);
             Compare(existingProperty.Attributes, newProperty.Attributes, symbols, existingProperty, newProperty);
 
             if (existingProperty.Type.NestedElements.Any())
@@ -140,13 +124,13 @@ namespace ApiGuard.Domain.Strategies
             }
             else
             {
-                Compare(existingProperty.Type, newProperty.Type, symbols, existingProperty, newProperty);
+                Compare(existingProperty.Type, newProperty.Type, symbols);
             }
         }
 
         private void Compare(MyMethod existingMethod, MyMethod newMethod, List<SymbolMismatch> symbols)
         {
-            Compare(existingMethod.Name, newMethod.Name, symbols, existingMethod, newMethod);
+            Compare(MismatchReason.ElementRemoved, existingMethod.Name, newMethod.Name, symbols, existingMethod, newMethod);
             Compare(existingMethod.ReturnType, newMethod.ReturnType, symbols);
             Compare(existingMethod.Parameters, newMethod.Parameters, symbols, existingMethod, newMethod);
             Compare(existingMethod.Attributes, newMethod.Attributes, symbols, existingMethod, newMethod);
@@ -154,7 +138,7 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(List<MyParameter> existingParameters, List<MyParameter> newParameters, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            if (!Compare(existingParameters.Count, newParameters.Count, symbols, expectedSymbol, newSymbol))
+            if (!Compare(MismatchReason.DefinitionChanged, existingParameters.Count, newParameters.Count, symbols, expectedSymbol, newSymbol))
             {
                 return;
             }
@@ -170,9 +154,9 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(MyParameter existingParameter, MyParameter newParameter, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            Compare(existingParameter.Ordinal, newParameter.Ordinal, symbols, expectedSymbol, newSymbol);
+            Compare(MismatchReason.DefinitionChanged, existingParameter.Ordinal, newParameter.Ordinal, symbols, expectedSymbol, newSymbol);
             Compare(existingParameter.Type, newParameter.Type, symbols);
-            Compare(existingParameter.Name, newParameter.Name, symbols, existingParameter, newParameter);
+            Compare(MismatchReason.ParameterNameChanged, existingParameter.Name, newParameter.Name, symbols, existingParameter, newParameter);
         }
 
         private void Compare(List<MyAttribute> existingAttributes, List<MyAttribute> newAttributes, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
@@ -182,13 +166,13 @@ namespace ApiGuard.Domain.Strategies
 
             if (removedAttributes.Any())
             {
-                removedAttributes.ForEach(x => AddMismatch(symbols, x, null));
+                removedAttributes.ForEach(x => AddMismatch(MismatchReason.ElementRemoved, symbols, x, null));
                 return;
             }
 
             if (addedAttributes.Any())
             {
-                addedAttributes.ForEach(x => AddMismatch(symbols, null, x));
+                addedAttributes.ForEach(x => AddMismatch(MismatchReason.AttributeMismatch, symbols, null, x));
                 return;
             }
 
@@ -202,18 +186,18 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(MyAttribute existingAttribute, MyAttribute newAttribute, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)
         {
-            Compare(existingAttribute.Name, newAttribute.Name, symbols, expectedSymbol, newSymbol);
+            Compare(MismatchReason.AttributeMismatch, existingAttribute.Name, newAttribute.Name, symbols, expectedSymbol, newSymbol);
 
             if (newAttribute.Values.Count != existingAttribute.Values.Count)
             {
-                AddMismatch(symbols, expectedSymbol, newSymbol);
+                AddMismatch(MismatchReason.AttributeMismatch, symbols, expectedSymbol, newSymbol);
                 return;
             }
 
             foreach (var value in existingAttribute.Values)
             {
                 var correspondingAttribute = newAttribute.Values.FirstOrDefault(x => x.Key == value.Key);
-                Compare(value.Value, correspondingAttribute.Value, symbols, expectedSymbol, newSymbol);
+                Compare(MismatchReason.AttributeMismatch, value.Value, correspondingAttribute.Value, symbols, expectedSymbol, newSymbol);
             }
         }
     }

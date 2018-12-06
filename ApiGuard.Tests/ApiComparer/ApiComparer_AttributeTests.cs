@@ -261,8 +261,8 @@ public class Args
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<AttributeMismatchException>(ex);
-            Assert.Equal("The ObsoleteAttribute attribute has changed for Args.Something (int)", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element ObsoleteAttribute was removed", ex.Message);
         }
 
         [Fact]
@@ -295,8 +295,8 @@ public class Args
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<AttributeMismatchException>(ex);
-            Assert.Equal("The ObsoleteAttribute attribute has changed for Args", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element ObsoleteAttribute was removed", ex.Message);
         }
 
         [Fact]

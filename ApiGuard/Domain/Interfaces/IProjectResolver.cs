@@ -9,6 +9,6 @@ namespace ApiGuard.Domain.Interfaces
 
         bool ApiFileExists(ProjectInfo projectInfo, Type type);
 
-        void WriteApiToFile(ProjectInfo projectInfo, Type type, Api api);
+        void WriteApiToFile(ProjectInfo projectInfo, Type type, MyType api);
     }
 }

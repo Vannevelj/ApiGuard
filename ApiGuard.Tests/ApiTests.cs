@@ -9,7 +9,7 @@ namespace ApiGuard.Tests
 {
     public class ApiTests : BaseTest
     {
-        private async Task<Api> GetApi(string source)
+        private async Task<MyType> GetApi(string source)
         {
             var symbolProvider = new SourceCodeRoslynSymbolProvider();
             var typeLoader = new RoslynTypeLoader(symbolProvider);

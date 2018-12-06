@@ -4,6 +4,6 @@ namespace ApiGuard.Domain.Interfaces
 {
     internal interface IApiComparer
     {
-        void Compare(Api originalApi, Api newApi);
+        void Compare(MyType originalApi, MyType newApi);
     }
 }

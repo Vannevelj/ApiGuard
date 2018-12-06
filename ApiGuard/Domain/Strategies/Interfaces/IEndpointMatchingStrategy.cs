@@ -5,8 +5,8 @@ namespace ApiGuard.Domain.Strategies.Interfaces
 {
     internal interface IEndpointMatchingStrategy
     {
-        EndpointResult GetEndpoint(List<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint);
+        EndpointResult GetEndpoint(IEnumerable<MyMethod> allEndpointsInNewApi, MyMethod existingEndpoint);
 
-        bool TryGetChangedApiAttribute(Api oldApi, Api newApi, out MyAttribute attribute);
+        bool TryGetChangedApiAttribute(MyType oldApi, MyType newApi, out MyAttribute attribute);
     }
 }
