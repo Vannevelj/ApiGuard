@@ -921,5 +921,185 @@ public class Args
 
             Assert.Single(differences);
         }
+
+        [Fact]
+        public async Task SwappedMethod_NoChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+    public void SecondMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void SecondMethod() { }
+    public void FirstMethod() { } 
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task SwappedMethod_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+    public void SecondMethod(int a) { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void SecondMethod(string a) { }
+    public void FirstMethod() { } 
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task SwappedProperty_NoChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstProperty { get; set; }
+    public int SecondProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int SecondProperty { get; set; }
+    public int FirstProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task SwappedProperty_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public double FirstProperty { get; set; }
+    public int SecondProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int SecondProperty { get; set; }
+    public int FirstProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task SwappedAttribute_NoChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod(Args a) { }
+}
+
+public class Args
+{
+    [DataMember(Order = 1)]
+    [Obsolete]
+    public int Data { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod(Args a) { }
+}
+
+public class Args
+{
+    [Obsolete]
+    [DataMember(Order = 1)]
+    public int Data { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task SwappedAttribute_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod(Args a) { }
+}
+
+public class Args
+{
+    [DataMember(Order = 1)]
+    [Obsolete]
+    public int Data { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod(Args a) { }
+}
+
+public class Args
+{
+    [Obsolete]
+    [DataMember(Order = 2)]
+    public int Data { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
     }
 }
