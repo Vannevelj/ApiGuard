@@ -21,14 +21,17 @@ namespace ApiGuard.Domain
             var apiSymbol = await _roslynSymbolProvider.GetApiClassSymbol(input);
             var definingAssembly = apiSymbol.ContainingAssembly;
 
-            var api = GetType(apiSymbol, definingAssembly, 0);
+            var api = GetType(apiSymbol, definingAssembly, null, 0);
 
             return api;
         }
 
-        private static MyType GetType(ITypeSymbol complexObject, IAssemblySymbol definingAssembly, int depth)
+        private static MyType GetType(ITypeSymbol complexObject, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
         {
-            var type = new MyType(GetName(complexObject), depth);
+            var type = new MyType(GetName(complexObject), depth)
+            {
+                Parent = parent
+            };
             depth++;
 
             if (Equals(complexObject.ContainingAssembly, definingAssembly) && !complexObject.IsValueType)
@@ -59,11 +62,12 @@ namespace ApiGuard.Domain
 
         private static MyProperty GetProperty(IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly, MyType parent, int depth)
         {
-            var property = new MyProperty(propertySymbol.Name, new MyType(GetName(propertySymbol.Type), depth + 1))
+            var property = new MyProperty(propertySymbol.Name)
             {
-                Parent = parent,
-                Type = GetType(propertySymbol.Type, definingAssembly, depth)
+                Parent = parent
             };
+
+            property.Type = GetType(propertySymbol.Type, definingAssembly, property, depth + 1);
 
             foreach (var attributeData in propertySymbol.GetAttributes())
             {
@@ -76,11 +80,12 @@ namespace ApiGuard.Domain
 
         private static MyMethod GetMethod(IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly, MyType parent, int depth)
         {
-            var method = new MyMethod(methodSymbol.Name, new MyType(GetName(methodSymbol.ReturnType), depth + 1))
+            var method = new MyMethod(methodSymbol.Name)
             {
                 Parent = parent,
-                ReturnType = GetType(methodSymbol.ReturnType, definingAssembly, depth)
             };
+
+            method.ReturnType = GetType(methodSymbol.ReturnType, definingAssembly, method, depth);
 
             foreach (var parameterSymbol in methodSymbol.Parameters)
             {
@@ -115,13 +120,13 @@ namespace ApiGuard.Domain
 
         private static MyParameter GetParameter(IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
         {
-            var parameter = new MyParameter(new MyType(GetName(parameterSymbol.Type), depth + 1), parameterSymbol.Ordinal)
+            var parameter = new MyParameter(parameterSymbol.Name, parameterSymbol.Ordinal)
             {
                 Parent = parent,
                 Depth = depth,
-                Name = parameterSymbol.Name,
-                Type = GetType(parameterSymbol.Type, definingAssembly, depth)
             };
+
+            parameter.Type = GetType(parameterSymbol.Type, definingAssembly, parameter, depth);
 
             return parameter;
         }

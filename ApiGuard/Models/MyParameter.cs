@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ApiGuard.Models
 {
@@ -11,9 +12,9 @@ namespace ApiGuard.Models
         public string Name { get; set; }
         public ISymbol Parent { get; set; }
 
-        public MyParameter(MyType type, int ordinal)
+        public MyParameter(string name, int ordinal)
         {
-            Type = type;
+            Name = name;
             Ordinal = ordinal;
         }
 
@@ -46,5 +47,7 @@ namespace ApiGuard.Models
             var method = (MyMethod) Parent;
             return $"{method.Parent.Name}.{method.Name}";
         }
+
+        public override string ToString() => $"{Parent}";
     }
 }

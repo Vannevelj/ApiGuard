@@ -257,7 +257,7 @@ public class MyApi
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
             Assert.IsType<DefinitionMismatchException>(ex);
-            Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod(int) but received int MyApi.FirstMethod(string)", ex.Message);
+            Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod(string) but received int MyApi.FirstMethod(int)", ex.Message);
         }
 
         [Fact]

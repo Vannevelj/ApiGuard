@@ -11,10 +11,9 @@ namespace ApiGuard.Models
         public int Depth { get; set; }
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
 
-        public MyProperty(string name, MyType type)
+        public MyProperty(string name)
         {
             Name = name;
-            Type = type;
         }
 
         public override bool Equals(object obj) => Equals(obj as MyProperty);

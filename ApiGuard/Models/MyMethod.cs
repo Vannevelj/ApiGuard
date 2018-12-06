@@ -13,10 +13,9 @@ namespace ApiGuard.Models
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public List<MyParameter> Parameters { get; set; } = new List<MyParameter>();
 
-        public MyMethod(string name, MyType returnType)
+        public MyMethod(string name)
         {
             Name = name;
-            ReturnType = returnType;
         }
 
         public override bool Equals(object obj) => Equals(obj as MyMethod);
