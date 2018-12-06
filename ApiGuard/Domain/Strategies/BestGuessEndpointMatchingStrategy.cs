@@ -172,6 +172,7 @@ namespace ApiGuard.Domain.Strategies
         {
             Compare(existingParameter.Ordinal, newParameter.Ordinal, symbols, expectedSymbol, newSymbol);
             Compare(existingParameter.Type, newParameter.Type, symbols);
+            Compare(existingParameter.Name, newParameter.Name, symbols, existingParameter, newParameter);
         }
 
         private void Compare(List<MyAttribute> existingAttributes, List<MyAttribute> newAttributes, List<SymbolMismatch> symbols, ISymbol expectedSymbol, ISymbol newSymbol)

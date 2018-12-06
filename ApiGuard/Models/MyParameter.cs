@@ -40,5 +40,11 @@ namespace ApiGuard.Models
 
         public static bool operator ==(MyParameter parameter1, MyParameter parameter2) => EqualityComparer<MyParameter>.Default.Equals(parameter1, parameter2);
         public static bool operator !=(MyParameter parameter1, MyParameter parameter2) => !(parameter1 == parameter2);
+
+        public string GetShorthandParent()
+        {
+            var method = (MyMethod) Parent;
+            return $"{method.Parent.Name}.{method.Name}";
+        }
     }
 }

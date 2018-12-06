@@ -214,6 +214,30 @@ public class MyApi
         }
 
         [Fact]
+        public async Task DifferentParameterName()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(int abc) { return 32; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(int def) { return 32; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
         public async Task ComplexParameterType()
         {
             var originalApi = GetApiFile(@"

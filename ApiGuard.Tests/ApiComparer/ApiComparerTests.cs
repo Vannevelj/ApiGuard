@@ -238,6 +238,52 @@ public class Args
         }
 
         [Fact]
+        public async Task ApiComparer_ParameterChanged_SimpleObject_TypeChanged()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(string a) { return 32; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(int a) { return 32; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod(int) but received int MyApi.FirstMethod(string)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ParameterChanged_SimpleObject_NameChanged()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(string initial) { return 32; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(string newValue) { return 32; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ParameterNameMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. The parameter on MyApi.FirstMethod was renamed from initial to newValue", ex.Message);
+        }
+
+        [Fact]
         public async Task ApiComparer_ParameterChanged_NestedComplexObject_TypeChanged()
         {
             var originalApi = GetApiFile(@"
