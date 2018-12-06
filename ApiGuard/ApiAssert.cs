@@ -46,7 +46,6 @@ namespace ApiGuard
             // Nice to have:
             // Protected modifier
             // Fields / Events / Delegates
-            // Parameter name
             // Automatic pass if there is a major version increase
             // Re-ordering members inside a type
             // adding member to interface/abstract class
