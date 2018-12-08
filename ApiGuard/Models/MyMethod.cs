@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ApiGuard.Models
 {
-    internal class MyMethod : IEquatable<MyMethod>, ISymbol
+    internal class MyMethod : IEquatable<MyMethod>, IMemberSymbol
     {
         public MyType ReturnType { get; set; }
         public string Name { get; set; }

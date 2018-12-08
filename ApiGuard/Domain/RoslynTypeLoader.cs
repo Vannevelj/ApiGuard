@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain.Interfaces;
 using ApiGuard.Domain.Strategies.Interfaces;
+using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using Microsoft.CodeAnalysis;
 using ISymbol = ApiGuard.Models.ISymbol;
@@ -20,6 +21,11 @@ namespace ApiGuard.Domain
         {
             var apiSymbol = await _roslynSymbolProvider.GetApiClassSymbol(input);
             var definingAssembly = apiSymbol.ContainingAssembly;
+
+            if (apiSymbol.DeclaredAccessibility != Accessibility.Public)
+            {
+                throw new ApiNotPublicException(apiSymbol.Name);
+            }
 
             var api = GetType(apiSymbol, definingAssembly, null, 0);
 
@@ -70,6 +76,7 @@ namespace ApiGuard.Domain
             };
 
             property.Type = GetType(propertySymbol.Type, definingAssembly, property, depth + 1);
+            property.Modifiers = GetModifiers(propertySymbol);
 
             foreach (var attributeData in propertySymbol.GetAttributes())
             {
@@ -157,7 +164,7 @@ namespace ApiGuard.Domain
             }
             else
             {
-                modifiers.Add(symbol.DeclaredAccessibility.ToString());
+                modifiers.Add(symbol.DeclaredAccessibility.ToString().ToLowerInvariant());
             }
 
             return modifiers;

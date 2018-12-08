@@ -40,10 +40,15 @@ namespace ApiGuard.Domain.Strategies
             Compare(existingType.Modifiers, newType.Modifiers, symbols, existingType, newType);
         }
 
-        private void Compare(List<ISymbol> existingSymbols, List<ISymbol> newSymbols, List<SymbolMismatch> symbols)
+        private void Compare(List<IMemberSymbol> existingSymbols, List<IMemberSymbol> newSymbols, List<SymbolMismatch> symbols)
         {
             foreach (var existingSymbol in existingSymbols)
             {
+                if (!IsPartOfTheApi(existingSymbol.Modifiers))
+                {
+                    continue;
+                }
+
                 var correspondingNewSymbol = GetCorrespondingSymbol(existingSymbol, newSymbols);
                 if (correspondingNewSymbol == null)
                 {
@@ -65,7 +70,7 @@ namespace ApiGuard.Domain.Strategies
             }
         }
 
-        private ISymbol GetCorrespondingSymbol(ISymbol current, List<ISymbol> allSymbols)
+        private ISymbol GetCorrespondingSymbol(ISymbol current, List<IMemberSymbol> allSymbols)
         {
             var potentialCandidates = allSymbols.Where(x => x.Name == current.Name && x.GetType() == current.GetType()).ToList();
 
@@ -95,6 +100,7 @@ namespace ApiGuard.Domain.Strategies
             Compare(existingProperty.Name, newProperty.Name, symbols, existingProperty, newProperty, MismatchReason.ElementRemoved);
             Compare(existingProperty.Attributes, newProperty.Attributes, symbols);
             Compare(existingProperty.Type, newProperty.Type, symbols);
+            Compare(existingProperty.Modifiers, newProperty.Modifiers, symbols, existingProperty, newProperty);
         }
 
         private void Compare(MyMethod existingMethod, MyMethod newMethod, List<SymbolMismatch> symbols)
@@ -186,5 +192,7 @@ namespace ApiGuard.Domain.Strategies
                 }
             }
         }
+
+        private bool IsPartOfTheApi(List<string> modifiers) => modifiers.Any(x => x == "public" || x == "protected");
     }
 }

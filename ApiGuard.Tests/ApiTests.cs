@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain;
 using ApiGuard.Domain.Strategies;
+using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using Xunit;
 
@@ -1101,7 +1102,7 @@ public class Args
         }
 
         [Fact]
-        public async Task InternalType_ToPublic()
+        public async Task InternalDeclaredAccessibilityApi()
         {
             var originalApi = GetApiFile(@"
 internal class MyApi
@@ -1116,12 +1117,12 @@ public class MyApi
     public void FirstMethod() { }
 }
 ");
-            var firstApi = await GetApi(originalApi);
+            var ex = await Record.ExceptionAsync(() => GetApi(originalApi));
+
+            Assert.IsType<ApiNotPublicException>(ex);
+            Assert.Equal("The type MyApi has to be public", ex.Message);
+
             var secondApi = await GetApi(newApi);
-
-            var differences = GetApiDifferences(firstApi, secondApi);
-
-            Assert.Single(differences);
         }
 
         [Fact]
@@ -1145,7 +1146,7 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Empty(differences);
         }
 
         [Fact]
@@ -1193,7 +1194,7 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Empty(differences);
         }
 
         [Fact]
@@ -1285,7 +1286,7 @@ public class MyApi
             var newApi = GetApiFile(@"
 public class MyApi
 {
-    internal void FirstMethod() { }
+    protected void FirstMethod() { }
 }
 ");
             var firstApi = await GetApi(originalApi);
@@ -1310,6 +1311,54 @@ public class MyApi
 public class MyApi
 {
     private void FirstMethod(string a) { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task ProtectedMethod_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    protected void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    protected void FirstMethod(string a) { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task InternalMethod_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod(string a) { }
 }
 ");
             var firstApi = await GetApi(originalApi);
@@ -1648,7 +1697,7 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Empty(differences);
         }
 
         [Fact]
@@ -1696,35 +1745,11 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
-        }
-
-        [Fact]
-        public async Task ImplicitlyDeclaredAccessibilityType_MadeInternal()
-        {
-            var originalApi = GetApiFile(@"
-class MyApi
-{
-    public void MyMethod() { }
-}
-");
-
-            var newApi = GetApiFile(@"
-internal class MyApi
-{
-    public void MyMethod() { }
-}
-");
-            var firstApi = await GetApi(originalApi);
-            var secondApi = await GetApi(newApi);
-
-            var differences = GetApiDifferences(firstApi, secondApi);
-
             Assert.Empty(differences);
         }
 
         [Fact]
-        public async Task ImplicitlyDeclaredAccessibilityType_MadePublic()
+        public async Task ImplicitlyDeclaredAccessibilityApi()
         {
             var originalApi = GetApiFile(@"
 class MyApi
@@ -1737,6 +1762,126 @@ class MyApi
 public class MyApi
 {
     public void MyMethod() { }
+}
+");
+            var ex = await Record.ExceptionAsync(() => GetApi(originalApi));
+
+            Assert.IsType<ApiNotPublicException>(ex);
+            Assert.Equal("The type MyApi has to be public", ex.Message);
+
+            var secondApi = await GetApi(newApi);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityProperty_MadePublic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task PublicProperty_MadeImplicit()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    string MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicProperty_MadeInternal()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal string MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicProperty_MadeProtected()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    protected string MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicProperty_MadePrivate()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private string MyProperty { get; set; }
 }
 ");
             var firstApi = await GetApi(originalApi);
