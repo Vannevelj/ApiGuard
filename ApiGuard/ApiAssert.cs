@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using ApiGuard.Domain;
 using ApiGuard.Domain.Strategies;
-using ApiGuard.Exceptions;
 
 namespace ApiGuard
 {
     public static class ApiAssert
     {
-        public static async Task HasNotChanged(ConfigurationOptions options, params Type[] types)
+        public static async Task HasNotChanged(params Type[] types)
         {
             foreach (var type in types)
             {
-                await HasNotChanged(options, type);
+                await HasNotChanged(type);
             }
         }
 
-        public static async Task HasNotChanged(ConfigurationOptions options, Type type)
+        private static async Task HasNotChanged(Type type)
         {
             var projectResolver = new ProjectResolver();
             var symbolProvider = new FileSystemRoslynSymbolProvider(projectResolver);
@@ -38,17 +36,8 @@ namespace ApiGuard
             var comparer = new ApiComparer(compareStrategy);
             comparer.Compare(existingApi, api);
 
-            // TODO: use the options
-            // The exception to this is when we see a [BETA] or [OBSOLETE] attribute on it
-
-            // In a separate project, provide a [BETA] attribute and corresponding Roslyn analyzer so it shows a warning
-
             // Nice to have:
-            // Protected modifier
             // Fields / Events / Delegates
-            // Automatic pass if there is a major version increase
-             
-            // Changing modifiers (public/static)
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type
