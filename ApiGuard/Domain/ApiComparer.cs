@@ -16,48 +16,23 @@ namespace ApiGuard.Domain
             _endpointMatchingStrategy = endpointMatchingStrategy;
         }
 
-        public IEnumerable<EndpointResult> GetEndpointDifferences(MyType oldApi, MyType newApi)
-        {
-            foreach (var endpoint in oldApi.NestedElements.OfType<MyMethod>())
-            {
-                var result = _endpointMatchingStrategy.GetEndpoint(newApi.NestedElements.OfType<MyMethod>(), endpoint);
-                if (!result.IsExactMatch)
-                {
-                    yield return result;
-                }
-            }
-        }
-
         public void Compare(MyType originalApi, MyType newApi)
         {
-            if (originalApi.Name != newApi.Name)
+            var differences = _endpointMatchingStrategy.GetApiDifferences(originalApi, newApi);
+            if (differences.Count == 0)
             {
-                throw new ApiNotFoundException(originalApi.Name);
+                return;
             }
 
-            if (_endpointMatchingStrategy.TryGetChangedApiAttribute(originalApi, newApi, out var apiAttribute))
+            var mismatch = differences.First();
+
+            switch (mismatch.Reason)
             {
-                throw new AttributeMismatchException(apiAttribute);
-            }
-
-            foreach (var endpointResult in GetEndpointDifferences(originalApi, newApi))
-            {
-                // The API has no relevant endpoints
-                if (!endpointResult.IsSameEndpoint)
-                {
-                    throw new EndpointNotFoundException(endpointResult.ExistingEndpoint);
-                }
-
-                var innerMostMismatch = endpointResult.SymbolsChanged.OrderByDescending(x => x.Received?.Depth ?? x.Expected?.Depth).First();
-
-                switch (innerMostMismatch.Reason)
-                {
-                    case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(innerMostMismatch); break;
-                    case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(innerMostMismatch); break;
-                    case MismatchReason.TypeChanged: throw new DefinitionMismatchException(innerMostMismatch, withParentInfo: true);
-                    case MismatchReason.ElementRemoved: throw new ElementRemovedException(innerMostMismatch);
-                    case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(innerMostMismatch);
-                }
+                case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(mismatch); break;
+                case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(mismatch); break;
+                case MismatchReason.TypeChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
+                case MismatchReason.ElementRemoved: throw new ElementRemovedException(mismatch);
+                case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(mismatch);
             }
         }
 

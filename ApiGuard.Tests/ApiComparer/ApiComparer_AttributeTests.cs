@@ -227,8 +227,8 @@ public class SomeAttribute : Attribute
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<AttributeMismatchException>(ex);
-            Assert.Equal("The SomeAttribute attribute has changed for MyApi", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element SomeAttribute was removed", ex.Message);
         }
 
         [Fact]

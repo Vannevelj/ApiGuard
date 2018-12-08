@@ -8,5 +8,6 @@
         ParameterNameChanged = 3,
         DefinitionChanged = 4,
         TypeChanged = 5,
+        ModifierChanged = 6,
     }
 }

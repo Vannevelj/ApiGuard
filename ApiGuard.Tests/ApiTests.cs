@@ -586,7 +586,7 @@ public class Opts
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Equal(3, differences.Count);
         }
 
         [Fact]
@@ -879,11 +879,9 @@ public class MyApi
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            var matchingStrategy = new BestGuessEndpointMatchingStrategy();
-            var hasDifference = matchingStrategy.TryGetChangedApiAttribute(firstApi, secondApi, out var attribute);
+            var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.True(hasDifference);
-            Assert.Equal("ObsoleteAttribute", attribute.Name);
+            Assert.Single(differences);
         }
 
         [Fact]
@@ -1023,7 +1021,7 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Empty(differences);
+            Assert.Single(differences);
         }
 
         [Fact]
@@ -1092,6 +1090,653 @@ public class Args
     [Obsolete]
     [DataMember(Order = 2)]
     public int Data { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task InternalType_ToPublic()
+        {
+            var originalApi = GetApiFile(@"
+internal class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task InternalMethod_ToPublic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task InternalMethod_ToPrivate()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task InternalMethod_ToProtected()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    protected void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task InternalNestedType_ToPublic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod(Args a) { }
+}
+
+internal class Args { }
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod(Args a) { }
+}
+
+public class Args { }
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task PublicMethod_ToInternal()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicMethod_ToPrivate()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicMethod_ToProtected()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PrivateMethod_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    private void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private void FirstMethod(string a) { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task PrivateMethod_Added()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+    private void Nothing() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task InstanceMethod_MadeStatic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public static void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task StaticMethod_MadeInstance()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public static void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task VirtualMethod_MadeNonVirtual()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public virtual void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task NonVirtualMethod_MadeVirtual()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void FirstMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public virtual void FirstMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task NonStaticClass_MadeStatic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public static class MyApi
+{
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task StaticClass_MadeNonStatic()
+        {
+            var originalApi = GetApiFile(@"
+public static class MyApi
+{
+
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task AbstractMethod_MadeNonAbstract()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract void MyMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public void MyMethod() 
+    {
+    }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task NonAbstractMethod_MadeAbstract()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public void MyMethod() 
+    {
+    }
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract void MyMethod();
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task NonAbstractType_MadeAbstract()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task AbstractType_MadeNonAbstract()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task SealedType_MadeNonSealed()
+        {
+            var originalApi = GetApiFile(@"
+public sealed class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task NonSealedType_MadeSealed()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public sealed class MyApi
+{
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityMethod_MadePublic()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    void MyMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void MyMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityMethod_MadePrivate()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    void MyMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private void MyMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityMethod_MadeInternal()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    void MyMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal void MyMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityType_MadeInternal()
+        {
+            var originalApi = GetApiFile(@"
+class MyApi
+{
+    public void MyMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+internal class MyApi
+{
+    public void MyMethod() { }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task ImplicitlyDeclaredAccessibilityType_MadePublic()
+        {
+            var originalApi = GetApiFile(@"
+class MyApi
+{
+    public void MyMethod() { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void MyMethod() { }
 }
 ");
             var firstApi = await GetApi(originalApi);

@@ -47,7 +47,8 @@ namespace ApiGuard
             // Protected modifier
             // Fields / Events / Delegates
             // Automatic pass if there is a major version increase
-            // adding member to interface/abstract class
+             
+            // Changing modifiers (public/static)
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type

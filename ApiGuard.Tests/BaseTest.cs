@@ -28,11 +28,10 @@ namespace Tests
 ";
         }
 
-        internal List<EndpointResult> GetApiDifferences(MyType originalApi, MyType newApi)
+        internal List<SymbolMismatch> GetApiDifferences(MyType originalApi, MyType newApi)
         {
             var strategy = new BestGuessEndpointMatchingStrategy();
-            var apiComparer = new Domain.ApiComparer(strategy);
-            return apiComparer.GetEndpointDifferences(originalApi, newApi).ToList();
+            return strategy.GetApiDifferences(originalApi, newApi);
         }
     }
 }

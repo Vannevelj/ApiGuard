@@ -26,35 +26,37 @@ namespace ApiGuard.Domain
             return api;
         }
 
-        private static MyType GetType(ITypeSymbol complexObject, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
+        private static MyType GetType(ITypeSymbol typeSymbol, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
         {
-            var type = new MyType(GetName(complexObject), depth)
+            var type = new MyType(GetName(typeSymbol), depth)
             {
                 Parent = parent
             };
             depth++;
 
-            if (Equals(complexObject.ContainingAssembly, definingAssembly) && !complexObject.IsValueType)
+            if (Equals(typeSymbol.ContainingAssembly, definingAssembly) && !typeSymbol.IsValueType)
             {
-                var properties = complexObject.GetMembers().OfType<IPropertySymbol>().ToList();
+                var properties = typeSymbol.GetMembers().OfType<IPropertySymbol>().ToList();
                 foreach (var propertySymbol in properties)
                 {
                     var property = GetProperty(propertySymbol, definingAssembly, type, depth);
                     type.NestedElements.Add(property);
                 }
 
-                var methods = complexObject.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName && !x.ContainingNamespace.Name.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                var methods = typeSymbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName && !x.ContainingNamespace.Name.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)).ToList();
                 foreach (var method in methods)
                 {
                     var newElement = GetMethod(method, definingAssembly, type, depth);
                     type.NestedElements.Add(newElement);
                 }
 
-                foreach (var attributeData in complexObject.GetAttributes())
+                foreach (var attributeData in typeSymbol.GetAttributes())
                 {
                     var attribute = GetAttribute(attributeData, type);
                     type.Attributes.Add(attribute);
                 }
+
+                type.Modifiers = GetModifiers(typeSymbol);
             }
 
             return type;
@@ -74,7 +76,7 @@ namespace ApiGuard.Domain
                 var attribute = GetAttribute(attributeData, property);
                 property.Attributes.Add(attribute);
             }
-
+            
             return property;
         }
 
@@ -86,6 +88,7 @@ namespace ApiGuard.Domain
             };
 
             method.ReturnType = GetType(methodSymbol.ReturnType, definingAssembly, method, depth);
+            method.Modifiers = GetModifiers(methodSymbol);
 
             foreach (var parameterSymbol in methodSymbol.Parameters)
             {
@@ -98,7 +101,7 @@ namespace ApiGuard.Domain
                 var attribute = GetAttribute(attributeData, method);
                 method.Attributes.Add(attribute);
             }
-
+            
             return method;
         }
 
@@ -114,7 +117,7 @@ namespace ApiGuard.Domain
             {
                 Parent = parent
             };
-
+            
             return attribute;
         }
 
@@ -132,5 +135,32 @@ namespace ApiGuard.Domain
         }
 
         private static string GetName(ITypeSymbol symbol) => symbol.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat);
+
+        private static List<string> GetModifiers(Microsoft.CodeAnalysis.ISymbol symbol)
+        {
+            var modifiers = new List<string>();
+
+            if (symbol.IsStatic) { modifiers.Add("static"); }
+            if (symbol.IsVirtual) { modifiers.Add("virtual"); }
+            if (symbol.IsAbstract) { modifiers.Add("abstract"); }
+            if (symbol.IsSealed) { modifiers.Add("sealed"); }
+            if (symbol.IsSealed) { modifiers.Add("sealed"); }
+
+            if (symbol.DeclaredAccessibility == Accessibility.NotApplicable)
+            {
+                switch (symbol)
+                {
+                    case ITypeSymbol _: modifiers.Add("internal"); break;
+                    case IMethodSymbol _: modifiers.Add("private"); break;
+                    case IPropertySymbol _: modifiers.Add("property"); break;
+                }
+            }
+            else
+            {
+                modifiers.Add(symbol.DeclaredAccessibility.ToString());
+            }
+
+            return modifiers;
+        }
     }
 }

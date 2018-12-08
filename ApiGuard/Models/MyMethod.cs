@@ -12,6 +12,7 @@ namespace ApiGuard.Models
         public ISymbol Parent { get; set; }
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public List<MyParameter> Parameters { get; set; } = new List<MyParameter>();
+        public List<string> Modifiers { get; set; } = new List<string>();
 
         public MyMethod(string name)
         {

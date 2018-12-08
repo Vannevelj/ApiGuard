@@ -52,8 +52,8 @@ public class MyNewApi
             
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<ApiNotFoundException>(ex);
-            Assert.Equal("Unable to find the API for type MyApi", ex.Message);
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected MyApi but received MyNewApi", ex.Message);
         }
 
         [Fact]
@@ -74,8 +74,8 @@ public class MyApi
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
         }
 
         [Fact]
@@ -96,8 +96,8 @@ public class MyApi
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod(int, string)", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod(int, string) was removed", ex.Message);
         }
 
         [Fact]
@@ -119,8 +119,8 @@ public class MyApi
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
         }
 
         [Fact]
@@ -142,8 +142,8 @@ public class MyApi
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
         }
 
         [Fact]
@@ -167,8 +167,8 @@ public class MyApi
 
             var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
 
-            Assert.IsType<EndpointNotFoundException>(ex);
-            Assert.Equal("The API has changed. Unable to find endpoint int MyApi.FirstMethod()", ex.Message);
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
         }
 
         [Fact]
@@ -603,6 +603,57 @@ public class Result
 
             Assert.IsType<DefinitionMismatchException>(ex);
             Assert.Equal("A mismatch on the API was found. Expected void MyApi.SecondMethod() but received void MyApi.SecondMethod(int)", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ReOrderedOverloadedMethods_NoChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void Method(int a, int b) { }
+    public void Method(string a, string b) { }
+    public void Method(double a, int b) { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void Method(string a, string b) { }
+    public void Method(double a, int b) { }
+    public void Method(int a, int b) { }
+}
+");
+
+            await Compare(originalApi, newApi);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ReOrderedOverloadedMethods_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public void Method(int a, int b) { }
+    public void Method(string a, string b) { }
+    public void Method(double a, int b) { }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public void Method(string a, string b) { }
+    public void Method(int a, int b) { }
+    public void Method(string a, int b) { }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected void MyApi.Method(double, int) but received void MyApi.Method(string, int)", ex.Message);
         }
     }
 }
