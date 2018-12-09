@@ -41,7 +41,6 @@ namespace ApiGuard
             // Supporting constructor arguments on attributes
             // Multiple public types per file
             // custom struct as type
-            // interface/abstract types as return types / parameters
             // adding methods to an interface/abstract type
             // Re-generate the output file if there are changes to the API that aren't breaking
         }

@@ -153,6 +153,40 @@ public class SomeAttribute : Attribute
         }
 
         [Fact]
+        public async Task ApiComparer_Attributes_AddedAttribute_OnApiType_AsInterface()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+    void FirstMethod(double d);
+}
+
+public class SomeAttribute : Attribute
+{
+    public int Something { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+[Some]
+public interface MyApi
+{
+    void FirstMethod(double d);
+}
+
+public class SomeAttribute : Attribute
+{
+    public int Something { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<AttributeMismatchException>(ex);
+            Assert.Equal("The SomeAttribute attribute has changed for MyApi", ex.Message);
+        }
+
+        [Fact]
         public async Task ApiComparer_Attributes_AddedAttribute_OnNestedType()
         {
             var originalApi = GetApiFile(@"

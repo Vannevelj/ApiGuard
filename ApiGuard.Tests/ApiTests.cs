@@ -92,6 +92,31 @@ public class MyApi
         }
 
         [Fact]
+        public async Task DifferentName_OnInterface()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+    int FirstMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+    int SecondMethod();
+}
+");
+
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
         public async Task AdditionalEndpoint()
         {
             var originalApi = GetApiFile(@"
@@ -204,6 +229,30 @@ public class MyApi
 public class MyApi
 {
     public int FirstMethod(bool x) { return 32; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task DifferentParameterType_OnInterface()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod() { return 32; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(IComparable c) { return 32; }
 }
 ");
             var firstApi = await GetApi(originalApi);

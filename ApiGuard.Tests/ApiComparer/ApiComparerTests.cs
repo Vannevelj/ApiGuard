@@ -327,6 +327,49 @@ public class Opts
         }
 
         [Fact]
+        public async Task ApiComparer_ParameterChanged_NestedComplexObject_TypeChanged_AsInterface()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public interface Args
+{
+    Opts Options { get; set; }
+}
+
+public class Opts
+{
+    public string X { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod(Args a) { return 32; }
+}
+
+public interface Args
+{
+    Opts Options { get; set; }
+}
+
+public class Opts
+{
+    public int X { get; set; }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<DefinitionMismatchException>(ex);
+            Assert.Equal("A mismatch on the API was found. Expected Opts.X (string) but received Opts.X (int)", ex.Message);
+        }
+
+        [Fact]
         public async Task ApiComparer_EndpointReturnTypeChanged_NestedComplexObject_TypeChanged()
         {
             var originalApi = GetApiFile(@"
@@ -535,6 +578,38 @@ public class Result
         }
 
         [Fact]
+        public async Task ApiComparer_MethodRemoved_AsInterface()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public interface Result
+{
+    void GetResult();
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public Result FirstMethod() { return null; }
+}
+
+public interface Result
+{
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element void Result.GetResult() was removed", ex.Message);
+        }
+
+        [Fact]
         public async Task ApiComparer_MultipleChangesInDifferentSubtree_WithNegativeChange()
         {
             var originalApi = GetApiFile(@"
@@ -673,6 +748,32 @@ public class MyApi
 {
     public void Method(string a, string b) { }
     public void Method(int a, int b) { }
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<ElementRemovedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The element void MyApi.Method(double, int) was removed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_ReOrderedOverloadedMethods_WithDelete_AsInterface()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+    void Method(int a, int b);
+    void Method(string a, string b);
+    void Method(double a, int b);
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+    void Method(string a, string b);
+    void Method(int a, int b);
 }
 ");
 
