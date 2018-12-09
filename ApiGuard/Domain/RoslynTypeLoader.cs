@@ -27,32 +27,31 @@ namespace ApiGuard.Domain
                 throw new ApiNotPublicException(apiSymbol.Name);
             }
 
-            var api = GetType(apiSymbol, definingAssembly, null, 0);
+            var api = GetType(apiSymbol, definingAssembly, null);
 
             return api;
         }
 
-        private static MyType GetType(ITypeSymbol typeSymbol, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
+        private static MyType GetType(ITypeSymbol typeSymbol, IAssemblySymbol definingAssembly, ISymbol parent)
         {
-            var type = new MyType(GetName(typeSymbol), depth)
+            var type = new MyType(GetName(typeSymbol))
             {
                 Parent = parent
             };
-            depth++;
 
             if (Equals(typeSymbol.ContainingAssembly, definingAssembly) && !typeSymbol.IsValueType)
             {
                 var properties = typeSymbol.GetMembers().OfType<IPropertySymbol>().ToList();
                 foreach (var propertySymbol in properties)
                 {
-                    var property = GetProperty(propertySymbol, definingAssembly, type, depth);
+                    var property = GetProperty(propertySymbol, definingAssembly, type);
                     type.NestedElements.Add(property);
                 }
 
                 var methods = typeSymbol.GetMembers().OfType<IMethodSymbol>().Where(x => x.CanBeReferencedByName && !x.ContainingNamespace.Name.StartsWith("System", StringComparison.InvariantCultureIgnoreCase)).ToList();
                 foreach (var method in methods)
                 {
-                    var newElement = GetMethod(method, definingAssembly, type, depth);
+                    var newElement = GetMethod(method, definingAssembly, type);
                     type.NestedElements.Add(newElement);
                 }
 
@@ -68,14 +67,14 @@ namespace ApiGuard.Domain
             return type;
         }
 
-        private static MyProperty GetProperty(IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly, MyType parent, int depth)
+        private static MyProperty GetProperty(IPropertySymbol propertySymbol, IAssemblySymbol definingAssembly, MyType parent)
         {
             var property = new MyProperty(propertySymbol.Name)
             {
                 Parent = parent
             };
 
-            property.Type = GetType(propertySymbol.Type, definingAssembly, property, depth + 1);
+            property.Type = GetType(propertySymbol.Type, definingAssembly, property);
             property.Modifiers = GetModifiers(propertySymbol);
 
             foreach (var attributeData in propertySymbol.GetAttributes())
@@ -87,19 +86,19 @@ namespace ApiGuard.Domain
             return property;
         }
 
-        private static MyMethod GetMethod(IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly, MyType parent, int depth)
+        private static MyMethod GetMethod(IMethodSymbol methodSymbol, IAssemblySymbol definingAssembly, MyType parent)
         {
             var method = new MyMethod(methodSymbol.Name)
             {
                 Parent = parent,
             };
 
-            method.ReturnType = GetType(methodSymbol.ReturnType, definingAssembly, method, depth);
+            method.ReturnType = GetType(methodSymbol.ReturnType, definingAssembly, method);
             method.Modifiers = GetModifiers(methodSymbol);
 
             foreach (var parameterSymbol in methodSymbol.Parameters)
             {
-                var parameter = GetParameter(parameterSymbol, definingAssembly, method, depth);
+                var parameter = GetParameter(parameterSymbol, definingAssembly, method);
                 method.Parameters.Add(parameter);
             }
 
@@ -128,15 +127,14 @@ namespace ApiGuard.Domain
             return attribute;
         }
 
-        private static MyParameter GetParameter(IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, ISymbol parent, int depth)
+        private static MyParameter GetParameter(IParameterSymbol parameterSymbol, IAssemblySymbol definingAssembly, ISymbol parent)
         {
             var parameter = new MyParameter(parameterSymbol.Name, parameterSymbol.Ordinal)
             {
                 Parent = parent,
-                Depth = depth,
             };
 
-            parameter.Type = GetType(parameterSymbol.Type, definingAssembly, parameter, depth);
+            parameter.Type = GetType(parameterSymbol.Type, definingAssembly, parameter);
 
             return parameter;
         }

@@ -5,7 +5,6 @@ namespace ApiGuard.Models
 {
     internal class MyAttribute : IEquatable<MyAttribute>, ISymbol
     {
-        public int Depth { get; set; }
         public string Name { get; set;  }
         public Dictionary<string, string> Values { get; }
 

@@ -8,7 +8,6 @@ namespace ApiGuard.Models
     {
         public MyType ReturnType { get; set; }
         public string Name { get; set; }
-        public int Depth { get; set; }
         public ISymbol Parent { get; set; }
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public List<MyParameter> Parameters { get; set; } = new List<MyParameter>();

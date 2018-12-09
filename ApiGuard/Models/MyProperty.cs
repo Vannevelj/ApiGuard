@@ -8,7 +8,6 @@ namespace ApiGuard.Models
         public MyType Type { get; set; }
         public string Name { get; set; }
         public ISymbol Parent { get; set; }
-        public int Depth { get; set; }
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public List<string> Modifiers { get; set; } = new List<string>();
 
