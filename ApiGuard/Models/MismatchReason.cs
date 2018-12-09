@@ -7,7 +7,9 @@
         ElementRemoved = 2,
         ParameterNameChanged = 3,
         DefinitionChanged = 4,
-        TypeChanged = 5,
+        TypeNameChanged = 5,
         ModifierChanged = 6,
+        TypeKindChanged = 7,
+        MemberAddedToInterface = 8,
     }
 }

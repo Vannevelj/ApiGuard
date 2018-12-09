@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ApiGuard.Models.Symbols;
 
 [assembly: InternalsVisibleTo("ApiGuard.Tests")]
 namespace ApiGuard.Models
 {
-    internal class MyType : IEquatable<MyType>, IMemberSymbol
+    internal class MyType : IEquatable<MyType>, ITypeSymbol
     {
         public string Name { get; set; }
         public ISymbol Parent { get; set; }
         public List<IMemberSymbol> NestedElements { get; set; } = new List<IMemberSymbol>();
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
+        public TypeKind TypeKind { get; set; }
+
         public List<string> Modifiers { get; set; } = new List<string>();
 
         public MyType(string typename)

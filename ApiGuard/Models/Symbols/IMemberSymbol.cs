@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ApiGuard.Models
+namespace ApiGuard.Models.Symbols
 {
     internal interface IMemberSymbol : ISymbol
     {

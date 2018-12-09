@@ -7,7 +7,8 @@ using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using Microsoft.CodeAnalysis;
-using ISymbol = ApiGuard.Models.ISymbol;
+using ISymbol = ApiGuard.Models.Symbols.ISymbol;
+using TypeKind = ApiGuard.Models.TypeKind;
 
 namespace ApiGuard.Domain
 {
@@ -38,6 +39,22 @@ namespace ApiGuard.Domain
             {
                 Parent = parent
             };
+
+            if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class && !typeSymbol.IsAbstract)
+            {
+                type.TypeKind = TypeKind.Class;
+            }
+            else
+            {
+                if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Interface)
+                {
+                    type.TypeKind = TypeKind.Interface;
+                }
+                else if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class)
+                {
+                    type.TypeKind = TypeKind.AbstractClass;
+                }
+            }
 
             if (Equals(typeSymbol.ContainingAssembly, definingAssembly) && !typeSymbol.IsValueType)
             {
@@ -149,15 +166,20 @@ namespace ApiGuard.Domain
             if (symbol.IsVirtual) { modifiers.Add("virtual"); }
             if (symbol.IsAbstract) { modifiers.Add("abstract"); }
             if (symbol.IsSealed) { modifiers.Add("sealed"); }
-            if (symbol.IsSealed) { modifiers.Add("sealed"); }
 
             if (symbol.DeclaredAccessibility == Accessibility.NotApplicable)
             {
                 switch (symbol)
                 {
                     case ITypeSymbol _: modifiers.Add("internal"); break;
-                    case IMethodSymbol _: modifiers.Add("private"); break;
-                    case IPropertySymbol _: modifiers.Add("property"); break;
+                    case IMethodSymbol method:
+                        var outerMethodType = method.ContainingType;
+                        modifiers.Add(outerMethodType.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class ? "private" : outerMethodType.DeclaredAccessibility.ToString().ToLowerInvariant());
+                        break;
+                    case IPropertySymbol property:
+                        var outerPropertyType = property.ContainingType;
+                        modifiers.Add(outerPropertyType.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class ? "private" : outerPropertyType.DeclaredAccessibility.ToString().ToLowerInvariant());
+                        break;
                 }
             }
             else

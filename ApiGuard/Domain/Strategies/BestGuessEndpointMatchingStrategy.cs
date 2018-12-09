@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ApiGuard.Domain.Strategies.Interfaces;
 using ApiGuard.Models;
+using ApiGuard.Models.Symbols;
 
 namespace ApiGuard.Domain.Strategies
 {
@@ -34,10 +35,16 @@ namespace ApiGuard.Domain.Strategies
 
         private void Compare(MyType existingType, MyType newType, List<SymbolMismatch> symbols)
         {
-            Compare(existingType.Name, newType.Name, symbols, existingType, newType, MismatchReason.TypeChanged);
+            Compare(existingType.Name, newType.Name, symbols, existingType, newType, MismatchReason.TypeNameChanged);
             Compare(existingType.NestedElements, newType.NestedElements, symbols);
             Compare(existingType.Attributes, newType.Attributes, symbols);
             Compare(existingType.Modifiers, newType.Modifiers, symbols, existingType, newType);
+            Compare(existingType.TypeKind, newType.TypeKind, symbols, existingType, newType, MismatchReason.TypeKindChanged);
+
+            if (newType.NestedElements.Count > existingType.NestedElements.Count && (newType.TypeKind == TypeKind.AbstractClass || newType.TypeKind == TypeKind.Interface))
+            {
+                AddMismatch(symbols, existingType, newType, MismatchReason.MemberAddedToInterface);
+            }
         }
 
         private void Compare(List<IMemberSymbol> existingSymbols, List<IMemberSymbol> newSymbols, List<SymbolMismatch> symbols)

@@ -782,5 +782,93 @@ public interface MyApi
             Assert.IsType<ElementRemovedException>(ex);
             Assert.Equal("A mismatch on the API was found. The element void MyApi.Method(double, int) was removed", ex.Message);
         }
+
+        [Fact]
+        public async Task ApiComparer_FromAbstractClass_ToInterface()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<TypeKindChangedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The type of MyApi was changed", ex.Message);
+        }
+
+        [Fact]
+        public async Task ApiComparer_FromInterface_ToAbstractClass ()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<TypeKindChangedException>(ex);
+            Assert.Equal("A mismatch on the API was found. The type of MyApi was changed", ex.Message);
+        }
+
+        [Fact]
+        public async Task AdditionalEndpoint_OnInterface()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+    int FirstMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+    int FirstMethod();
+    bool SecondMethod();
+}
+");
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<MemberAddedToInterfaceException>(ex);
+            Assert.Equal("A mismatch on the API was found. A member was added to the interface of MyApi", ex.Message);
+        }
+
+        [Fact]
+        public async Task AdditionalEndpoint_OnAbstractClass()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract int FirstMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract int FirstMethod();
+    public abstract bool SecondMethod();
+}
+");
+            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
+
+            Assert.IsType<MemberAddedToInterfaceException>(ex);
+            Assert.Equal("A mismatch on the API was found. A member was added to the interface of MyApi", ex.Message);
+        }
     }
 }

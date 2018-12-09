@@ -30,9 +30,11 @@ namespace ApiGuard.Domain
             {
                 case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(mismatch); break;
                 case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(mismatch); break;
-                case MismatchReason.TypeChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
+                case MismatchReason.TypeNameChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
                 case MismatchReason.ElementRemoved: throw new ElementRemovedException(mismatch);
                 case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(mismatch);
+                case MismatchReason.TypeKindChanged: throw new TypeKindChangedException(mismatch);
+                case MismatchReason.MemberAddedToInterface: throw new MemberAddedToInterfaceException(mismatch);
             }
         }
 

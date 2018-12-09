@@ -1,4 +1,6 @@
-﻿namespace ApiGuard.Models
+﻿using ApiGuard.Models.Symbols;
+
+namespace ApiGuard.Models
 {
     internal class SymbolMismatch
     {

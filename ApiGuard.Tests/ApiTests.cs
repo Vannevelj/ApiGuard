@@ -117,6 +117,102 @@ public interface MyApi
         }
 
         [Fact]
+        public async Task ApiType_FromClass_ToAbstractClass()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public int FirstMethod() { return 32; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public int FirstMethod() { return 32; }
+}
+");
+
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            // Added the implicit "abstract" modifier and changed typekind
+            Assert.Equal(2, differences.Count);
+        }
+
+        [Fact]
+        public async Task ApiType_FromClass_ToInterface()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+}
+");
+
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            // Added the implicit "abstract" modifier and changed typekind
+            Assert.Equal(2, differences.Count);
+        }
+
+        [Fact]
+        public async Task ApiType_FromAbstractClass_ToInterface()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+}
+");
+
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task ApiType_FromInterface_ToAbstractClass()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+}
+");
+
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
         public async Task AdditionalEndpoint()
         {
             var originalApi = GetApiFile(@"
@@ -139,6 +235,56 @@ public class MyApi
             var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Empty(differences);
+        }
+
+        [Fact]
+        public async Task AdditionalEndpoint_OnInterface()
+        {
+            var originalApi = GetApiFile(@"
+public interface MyApi
+{
+    int FirstMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public interface MyApi
+{
+    int FirstMethod();
+    bool SecondMethod();
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task AdditionalEndpoint_OnAbstractClass()
+        {
+            var originalApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract int FirstMethod();
+}
+");
+
+            var newApi = GetApiFile(@"
+public abstract class MyApi
+{
+    public abstract int FirstMethod();
+    public abstract bool SecondMethod();
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
         }
 
         [Fact]
@@ -636,7 +782,11 @@ public class Opts
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Equal(3, differences.Count);
+            // Removed a property
+            // Added an argument
+            // Changed the name of the return type
+            // The kind of type changed from 'class' to 'void'
+            Assert.Equal(4, differences.Count);
         }
 
         [Fact]
@@ -1019,7 +1169,8 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            // Changed name of return type and typekind
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]
@@ -1656,7 +1807,8 @@ public abstract class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            // Changed modifiers and type kind
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]
@@ -1678,7 +1830,8 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            // This records a change in modifiers as well as the type
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]
@@ -1846,6 +1999,30 @@ public class MyApi
         }
 
         [Fact]
+        public async Task PublicInterface_MadeInternal()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public IComparable MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    internal IComparable MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Single(differences);
+        }
+
+        [Fact]
         public async Task PublicProperty_MadeImplicit()
         {
             var originalApi = GetApiFile(@"
@@ -1867,6 +2044,31 @@ public class MyApi
             var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PublicProperty_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    public string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    public int MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            // Changed name of return type and typekind
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]
@@ -1939,6 +2141,30 @@ public class MyApi
             var differences = GetApiDifferences(firstApi, secondApi);
 
             Assert.Single(differences);
+        }
+
+        [Fact]
+        public async Task PrivateProperty_WithChange()
+        {
+            var originalApi = GetApiFile(@"
+public class MyApi
+{
+    private string MyProperty { get; set; }
+}
+");
+
+            var newApi = GetApiFile(@"
+public class MyApi
+{
+    private int MyProperty { get; set; }
+}
+");
+            var firstApi = await GetApi(originalApi);
+            var secondApi = await GetApi(newApi);
+
+            var differences = GetApiDifferences(firstApi, secondApi);
+
+            Assert.Empty(differences);
         }
     }
 }

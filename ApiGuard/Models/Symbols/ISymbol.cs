@@ -1,4 +1,4 @@
-﻿namespace ApiGuard.Models
+﻿namespace ApiGuard.Models.Symbols
 {
     internal interface ISymbol
     {
