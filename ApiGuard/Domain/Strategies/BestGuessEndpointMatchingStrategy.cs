@@ -70,7 +70,7 @@ namespace ApiGuard.Domain.Strategies
             }
         }
 
-        private ISymbol GetCorrespondingSymbol(ISymbol current, List<IMemberSymbol> allSymbols)
+        private ISymbol GetCorrespondingSymbol(IMemberSymbol current, List<IMemberSymbol> allSymbols)
         {
             var potentialCandidates = allSymbols.Where(x => x.Name == current.Name && x.GetType() == current.GetType()).ToList();
 
@@ -79,7 +79,7 @@ namespace ApiGuard.Domain.Strategies
                 return potentialCandidates.FirstOrDefault();
             }
 
-            if (current is MyMethod)
+            if (current is MyMethod currentMethod)
             {
                 if (potentialCandidates.Count <= 1)
                 {
@@ -87,8 +87,14 @@ namespace ApiGuard.Domain.Strategies
                 }
                 else
                 {
-                    // TODO: do more intelligent logic
-                    return potentialCandidates.FirstOrDefault();
+                    var potentialMethods = potentialCandidates.OfType<MyMethod>();
+                    var newSymbolWithSameParameters = potentialMethods.FirstOrDefault(x => x.Parameters.SequenceEqual(currentMethod.Parameters));
+                    if (newSymbolWithSameParameters != null)
+                    {
+                        return newSymbolWithSameParameters;
+                    }
+
+                    return null;
                 }
             }
 
