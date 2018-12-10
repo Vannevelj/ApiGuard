@@ -1,42 +1,86 @@
 {
-  "TypeName": "global::ApiGuard.TestApi.TheThirdService",
-  "Endpoints": [
+  "$id": "1",
+  "Name": "TheThirdService",
+  "Parent": null,
+  "NestedElements": [
     {
-      "ParentTypeName": null,
+      "$id": "2",
+      "$type": "ApiGuard.Models.MyMethod, ApiGuard",
       "ReturnType": {
-        "Typename": "void",
-        "Depth": 1,
-        "NestedElements": []
+        "$id": "3",
+        "Name": "void",
+        "Parent": {
+          "$ref": "2"
+        },
+        "NestedElements": [],
+        "Attributes": [],
+        "TypeKind": 0,
+        "Modifiers": []
       },
       "Name": "Boom",
-      "Depth": 0,
+      "Parent": {
+        "$ref": "1"
+      },
       "Attributes": [
         {
-          "Typename": "global::System.ObsoleteAttribute",
-          "Depth": 0,
-          "NestedElements": []
+          "$id": "4",
+          "Name": "ObsoleteAttribute",
+          "Values": {
+            "$id": "5"
+          },
+          "Parent": {
+            "$ref": "2"
+          }
         }
       ],
       "Parameters": [
         {
+          "$id": "6",
           "Type": {
-            "Typename": "string",
-            "Depth": 1,
-            "NestedElements": []
+            "$id": "7",
+            "Name": "string",
+            "Parent": {
+              "$ref": "6"
+            },
+            "NestedElements": [],
+            "Attributes": [],
+            "TypeKind": 1,
+            "Modifiers": []
           },
           "Ordinal": 0,
-          "Depth": 0
+          "Name": "name",
+          "Parent": {
+            "$ref": "2"
+          }
         },
         {
+          "$id": "8",
           "Type": {
-            "Typename": "int",
-            "Depth": 1,
-            "NestedElements": []
+            "$id": "9",
+            "Name": "int",
+            "Parent": {
+              "$ref": "8"
+            },
+            "NestedElements": [],
+            "Attributes": [],
+            "TypeKind": 0,
+            "Modifiers": []
           },
           "Ordinal": 1,
-          "Depth": 0
+          "Name": "number",
+          "Parent": {
+            "$ref": "2"
+          }
         }
+      ],
+      "Modifiers": [
+        "public"
       ]
     }
+  ],
+  "Attributes": [],
+  "TypeKind": 1,
+  "Modifiers": [
+    "public"
   ]
 }

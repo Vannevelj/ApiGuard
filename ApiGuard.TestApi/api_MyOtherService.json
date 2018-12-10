@@ -1,17 +1,36 @@
 {
-  "TypeName": "global::ApiGuard.TestApi.MyOtherService",
-  "Endpoints": [
+  "$id": "1",
+  "Name": "MyOtherService",
+  "Parent": null,
+  "NestedElements": [
     {
-      "ParentTypeName": null,
+      "$id": "2",
+      "$type": "ApiGuard.Models.MyMethod, ApiGuard",
       "ReturnType": {
-        "Typename": "int",
-        "Depth": 1,
-        "NestedElements": []
+        "$id": "3",
+        "Name": "int",
+        "Parent": {
+          "$ref": "2"
+        },
+        "NestedElements": [],
+        "Attributes": [],
+        "TypeKind": 0,
+        "Modifiers": []
       },
       "Name": "DoJazzyThings",
-      "Depth": 0,
+      "Parent": {
+        "$ref": "1"
+      },
       "Attributes": [],
-      "Parameters": []
+      "Parameters": [],
+      "Modifiers": [
+        "public"
+      ]
     }
+  ],
+  "Attributes": [],
+  "TypeKind": 1,
+  "Modifiers": [
+    "public"
   ]
 }
