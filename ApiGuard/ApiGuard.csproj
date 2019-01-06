@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Jeroen Vannevel</Authors>
+    <Company></Company>
+    <Description>Provides a unit testing API that ensures the API of your service remains backwards compatible.</Description>
+    <Copyright>MIT</Copyright>
+    <PackageProjectUrl>https://github.com/Vannevelj/ApiGuard</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
+    <PackageTags>C#, Unit Testing, API</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
