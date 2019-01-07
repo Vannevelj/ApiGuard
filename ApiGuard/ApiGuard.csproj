@@ -10,6 +10,7 @@
     <PackageProjectUrl>https://github.com/Vannevelj/ApiGuard</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
     <PackageTags>C#, Unit Testing, API</PackageTags>
+    <PackageLicenseUrl>https://github.com/Vannevelj/ApiGuard/blob/master/LICENSE.txt</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

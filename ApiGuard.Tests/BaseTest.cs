@@ -28,7 +28,7 @@ namespace Tests
 ";
         }
 
-        internal List<SymbolMismatch> GetApiDifferences(MyType originalApi, MyType newApi)
+        internal static List<SymbolMismatch> GetApiDifferences(MyType originalApi, MyType newApi)
         {
             var strategy = new BestGuessEndpointMatchingStrategy();
             return strategy.GetApiDifferences(originalApi, newApi);
