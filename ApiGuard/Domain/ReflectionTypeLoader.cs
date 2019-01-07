@@ -1,4 +1,5 @@
 ﻿using ApiGuard.Domain.Interfaces;
+using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using ApiGuard.Models.Symbols;
 using System;
@@ -14,7 +15,14 @@ namespace ApiGuard.Domain
         public Task<MyType> LoadApi(object input)
         {
             var apiSymbol = (Type) input;
+            
+            if (!(apiSymbol.IsPublic || apiSymbol.IsNestedPublic))
+            {
+                throw new ApiNotPublicException(apiSymbol.Name);
+            }
+
             var api = GetType(apiSymbol, apiSymbol.Assembly, null);
+
             return Task.FromResult(api);
         }
 
