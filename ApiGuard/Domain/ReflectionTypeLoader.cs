@@ -12,6 +12,27 @@ namespace ApiGuard.Domain
 {
     internal class ReflectionTypeLoader : ITypeLoader
     {
+        private static readonly Dictionary<Type, string> Aliases =
+                    new Dictionary<Type, string>()
+                {
+                    { typeof(byte), "byte" },
+                    { typeof(sbyte), "sbyte" },
+                    { typeof(short), "short" },
+                    { typeof(ushort), "ushort" },
+                    { typeof(int), "int" },
+                    { typeof(uint), "uint" },
+                    { typeof(long), "long" },
+                    { typeof(ulong), "ulong" },
+                    { typeof(float), "float" },
+                    { typeof(double), "double" },
+                    { typeof(decimal), "decimal" },
+                    { typeof(object), "object" },
+                    { typeof(bool), "bool" },
+                    { typeof(char), "char" },
+                    { typeof(string), "string" },
+                    { typeof(void), "void" }
+                };
+         
         public Task<MyType> LoadApi(object input)
         {
             var apiSymbol = (Type) input;
@@ -28,7 +49,7 @@ namespace ApiGuard.Domain
 
         private MyType GetType(Type typeSymbol, Assembly definingAssembly, ISymbol parent)
         {
-            var type = new MyType(typeSymbol.Name)
+            var type = new MyType(GetName(typeSymbol))
             {
                 Parent = parent
             };
@@ -79,6 +100,8 @@ namespace ApiGuard.Domain
 
             return type;
         }
+
+        private string GetName(Type typeSymbol) => Aliases.TryGetValue(typeSymbol, out var name) ? name : typeSymbol.Name;
 
         private MyProperty GetProperty(PropertyInfo propertySymbol, Assembly definingAssembly, ISymbol parent)
         {

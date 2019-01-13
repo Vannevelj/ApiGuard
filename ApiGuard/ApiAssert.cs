@@ -18,8 +18,10 @@ namespace ApiGuard
         private static async Task HasNotChanged(Type type)
         {
             var projectResolver = new ProjectResolver();
-            var symbolProvider = new FileSystemRoslynSymbolProvider(projectResolver);
-            var typeLoader = new RoslynTypeLoader(symbolProvider);
+            //var symbolProvider = new FileSystemRoslynSymbolProvider(projectResolver);
+            //var typeLoader = new RoslynTypeLoader(symbolProvider);
+
+            var typeLoader = new ReflectionTypeLoader();
             var projectInfo = projectResolver.GetProjectInfo(type);
 
             var api = await typeLoader.LoadApi(type);
