@@ -1709,7 +1709,7 @@ public static class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]
@@ -1733,7 +1733,7 @@ public class MyApi
 
             var differences = GetApiDifferences(firstApi, secondApi);
 
-            Assert.Single(differences);
+            Assert.Equal(2, differences.Count);
         }
 
         [Fact]

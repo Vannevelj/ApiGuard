@@ -58,7 +58,7 @@ namespace ApiGuard.Domain
                     type.NestedElements.Add(property);
                 }
 
-                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                                         .Where(x =>
                                             !x.DeclaringType.Namespace.StartsWith("System", StringComparison.InvariantCultureIgnoreCase) && // Excludes base methods on Object
                                             !x.IsSpecialName); // Excludes generated methods like get_Name and set_Name

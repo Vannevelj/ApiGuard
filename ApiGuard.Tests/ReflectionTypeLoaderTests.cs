@@ -2060,7 +2060,7 @@ namespace ApiGuard.Tests
 
                 var differences = GetApiDifferences(firstApi, secondApi);
 
-                Assert.Single(differences);
+                Assert.Equal(2, differences.Count);
             }
         }
 
@@ -2090,7 +2090,7 @@ namespace ApiGuard.Tests
 
                 var differences = GetApiDifferences(firstApi, secondApi);
 
-                Assert.Single(differences);
+                Assert.Equal(2, differences.Count);
             }
         }
 

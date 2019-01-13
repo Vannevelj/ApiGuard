@@ -40,7 +40,7 @@ namespace ApiGuard.Domain
                 Parent = parent
             };
 
-            if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class && !typeSymbol.IsAbstract)
+            if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Class && (!typeSymbol.IsAbstract && !typeSymbol.IsStatic))
             {
                 type.TypeKind = TypeKind.Class;
             }
