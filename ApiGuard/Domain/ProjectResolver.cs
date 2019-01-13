@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using ApiGuard.Domain.Interfaces;
 using ApiGuard.Models;
 using Newtonsoft.Json;
@@ -22,7 +23,7 @@ namespace ApiGuard.Domain
 
         public ProjectInfo GetProjectInfo(Type type)
         {
-            var assemblyPath = type.Assembly.Location;
+            var assemblyPath = GetAssemblyFullPath(type.Assembly);
             var projectName = type.Assembly.GetName().Name;
             var bin = Path.DirectorySeparatorChar + "bin";
             var testProjectPath = assemblyPath.Substring(0, assemblyPath.IndexOf(bin, StringComparison.InvariantCultureIgnoreCase));
@@ -35,6 +36,29 @@ namespace ApiGuard.Domain
                 SolutionPath = solutionPath,
                 ProjectFilePath = apiProjectPath
             };
+        }
+
+        /// <summary>
+        /// https://stackoverflow.com/a/28319367/1864167
+        /// </summary>
+        private static string GetAssemblyFullPath(Assembly assembly)
+        {
+            string codeBasePseudoUrl = assembly.CodeBase; // "pseudo" because it is not properly escaped
+            if (codeBasePseudoUrl != null)
+            {
+                const string filePrefix3 = @"file:///";
+                if (codeBasePseudoUrl.StartsWith(filePrefix3))
+                {
+                    string sPath = codeBasePseudoUrl.Substring(filePrefix3.Length);
+                    string bsPath = sPath.Replace('/', '\\');
+                    Console.WriteLine("bsPath: " + bsPath);
+                    string fp = Path.GetFullPath(bsPath);
+                    Console.WriteLine("fp: " + fp);
+                    return fp;
+                }
+            }
+            System.Diagnostics.Debug.Assert(false, "CodeBase evaluation failed! - Using Location as fallback.");
+            return Path.GetFullPath(assembly.Location);
         }
 
         public bool ApiFileExists(ProjectInfo projectInfo, Type type)
