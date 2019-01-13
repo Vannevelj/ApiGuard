@@ -58,7 +58,7 @@ namespace ApiGuard.Domain
                     type.NestedElements.Add(property);
                 }
 
-                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance)
                                         .Where(x =>
                                             !x.DeclaringType.Namespace.StartsWith("System", StringComparison.InvariantCultureIgnoreCase) && // Excludes base methods on Object
                                             !x.IsSpecialName); // Excludes generated methods like get_Name and set_Name
@@ -132,7 +132,7 @@ namespace ApiGuard.Domain
                 values.Add(namedArgument.MemberName, namedArgument.TypedValue.Value.ToString());
             }
 
-            var attribute = new MyAttribute(attributeData.GetType().Name, values)
+            var attribute = new MyAttribute(attributeData.AttributeType.Name, values)
             {
                 Parent = parent
             };
