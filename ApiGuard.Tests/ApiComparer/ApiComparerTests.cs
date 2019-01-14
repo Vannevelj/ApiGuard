@@ -34,29 +34,6 @@
 //        }
 
 //        [Fact]
-//        public async Task ApiComparer_DifferentApi()
-//        {
-//            var originalApi = GetApiFile(@"
-//public class MyApi
-//{
-//    public int FirstMethod() { return 32; }
-//}
-//");
-
-//            var newApi = GetApiFile(@"
-//public class MyNewApi
-//{
-//    public int FirstMethod() { return 32; }
-//}
-//");
-            
-//            var ex = await Record.ExceptionAsync(() => Compare(originalApi, newApi));
-
-//            Assert.IsType<DefinitionMismatchException>(ex);
-//            Assert.Equal("A mismatch on the API was found. Expected MyApi but received MyNewApi", ex.Message);
-//        }
-
-//        [Fact]
 //        public async Task ApiComparer_EndpointRemoved_SingleEndpoint()
 //        {
 //            var originalApi = GetApiFile(@"
@@ -805,7 +782,7 @@
 //        }
 
 //        [Fact]
-//        public async Task ApiComparer_FromInterface_ToAbstractClass ()
+//        public async Task ApiComparer_FromInterface_ToAbstractClass()
 //        {
 //            var originalApi = GetApiFile(@"
 //public interface MyApi
