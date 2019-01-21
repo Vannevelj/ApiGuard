@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ApiGuard.Domain.Interfaces;
 using ApiGuard.Domain.Strategies.Interfaces;
@@ -28,6 +29,7 @@ namespace ApiGuard.Domain
 
             switch (mismatch.Reason)
             {
+                case MismatchReason.ModifierChanged: 
                 case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(mismatch); break;
                 case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(mismatch); break;
                 case MismatchReason.TypeNameChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
@@ -35,6 +37,8 @@ namespace ApiGuard.Domain
                 case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(mismatch);
                 case MismatchReason.TypeKindChanged: throw new TypeKindChangedException(mismatch);
                 case MismatchReason.MemberAddedToInterface: throw new MemberAddedToInterfaceException(mismatch);
+                case MismatchReason.None:
+                    throw new ArgumentException("Unspecified mismatch reason");
             }
         }
 
