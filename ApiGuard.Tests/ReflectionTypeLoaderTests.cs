@@ -1,13 +1,9 @@
 ﻿using ApiGuard.Domain;
-using ApiGuard.Domain.Interfaces;
 using ApiGuard.Domain.Strategies;
-using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Xunit;
 
 namespace ApiGuard.Tests
 {
@@ -30,7 +26,7 @@ namespace ApiGuard.Tests
             var firstApi = await GetApi(originalApi);
             var secondApi = await GetApi(newApi);
 
-            new Domain.ApiComparer(new BestGuessEndpointMatchingStrategy())
+            new ApiComparer(new BestGuessEndpointMatchingStrategy())
                 .Compare(firstApi, secondApi);
         }
     }

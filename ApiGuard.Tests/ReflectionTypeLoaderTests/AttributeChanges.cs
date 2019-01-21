@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApiGuard.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
@@ -51,6 +52,15 @@ namespace ApiGuard.Tests
 
                     Assert.Single(differences);
                 }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<AttributeMismatchException>(ex);
+                    Assert.Equal("The DataMemberAttribute attribute has changed for Args.Data (int)", ex.Message);
+                }
             }
 
             public class AttributeRemoved
@@ -92,6 +102,15 @@ namespace ApiGuard.Tests
 
                     Assert.Single(differences);
                 }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element DataMemberAttribute was removed", ex.Message);
+                }
             }
 
             public class AttributeRemoved_OnMethod
@@ -122,6 +141,15 @@ namespace ApiGuard.Tests
                     var differences = GetApiDifferences(firstApi, secondApi);
 
                     Assert.Single(differences);
+                }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element ObsoleteAttribute was removed", ex.Message);
                 }
             }
 
@@ -164,6 +192,15 @@ namespace ApiGuard.Tests
 
                     Assert.Single(differences);
                 }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<AttributeMismatchException>(ex);
+                    Assert.Equal("The DataMemberAttribute attribute has changed for Args.Data (int)", ex.Message);
+                }
             }
 
             public class AttributeAdded_OnApiType
@@ -194,6 +231,15 @@ namespace ApiGuard.Tests
                     var differences = GetApiDifferences(firstApi, secondApi);
 
                     Assert.Single(differences);
+                }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<AttributeMismatchException>(ex);
+                    Assert.Equal("The ObsoleteAttribute attribute has changed for MyApi", ex.Message);
                 }
             }
 
@@ -236,6 +282,15 @@ namespace ApiGuard.Tests
                     var differences = GetApiDifferences(firstApi, secondApi);
 
                     Assert.Single(differences);
+                }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<AttributeMismatchException>(ex);
+                    Assert.Equal("The DataMemberAttribute attribute has changed for Args.Data (int)", ex.Message);
                 }
             }
 
@@ -281,6 +336,12 @@ namespace ApiGuard.Tests
 
                     Assert.Empty(differences);
                 }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    await Compare(typeof(Before.MyApi), typeof(After.MyApi));
+                }
             }
 
             public class SwappedAttribute_WithChange
@@ -324,6 +385,15 @@ namespace ApiGuard.Tests
                     var differences = GetApiDifferences(firstApi, secondApi);
 
                     Assert.Single(differences);
+                }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<AttributeMismatchException>(ex);
+                    Assert.Equal("The DataMemberAttribute attribute has changed for Args.Data (int)", ex.Message);
                 }
             }
         }
