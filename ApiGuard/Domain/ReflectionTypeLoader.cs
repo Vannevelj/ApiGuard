@@ -72,14 +72,14 @@ namespace ApiGuard.Domain
 
             if (Equals(typeSymbol.Assembly, definingAssembly) && !typeSymbol.IsValueType)
             {
-                var properties = typeSymbol.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                var properties = typeSymbol.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic);
                 foreach (var propertySymbol in properties)
                 {
                     var property = GetProperty(propertySymbol, definingAssembly, type);
                     type.NestedElements.Add(property);
                 }
 
-                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance)
+                var methods = typeSymbol.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic)
                                         .Where(x =>
                                             !x.DeclaringType.Namespace.StartsWith("System", StringComparison.InvariantCultureIgnoreCase) && // Excludes base methods on Object
                                             !x.IsSpecialName); // Excludes generated methods like get_Name and set_Name
@@ -178,7 +178,7 @@ namespace ApiGuard.Domain
         private List<string> GetModifiers(PropertyInfo property)
         {
             // https://stackoverflow.com/a/20807747/1864167
-            return GetModifiers(property.GetGetMethod()).Union(GetModifiers(property.GetSetMethod())).ToList();
+            return GetModifiers(property.GetGetMethod(true)).Union(GetModifiers(property.GetSetMethod(true))).ToList();
         }
 
         private List<string> GetModifiers(MethodInfo method)

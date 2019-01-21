@@ -1415,7 +1415,7 @@ namespace ApiGuard.Tests
                 var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                 Assert.IsType<ModifierChangedException>(ex);
-                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+                Assert.Equal("A mismatch on the API was found. A modifier changed on MyApi.MyProperty (IComparable)", ex.Message);
             }
         }
 
