@@ -25,7 +25,7 @@ namespace ApiGuard.Domain
                 return;
             }
 
-            var mismatch = differences.First();
+            var mismatch = differences.OrderByDescending(x => x.Reason).First();
 
             switch (mismatch.Reason)
             {

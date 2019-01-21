@@ -83,8 +83,8 @@ namespace ApiGuard.Tests
             {
                 var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
-                Assert.IsType<ModifierChangedException>(ex);
-                Assert.Equal("A mismatch on the API was found. A modifier changed on MyApi", ex.Message);
+                Assert.IsType<TypeKindChangedException>(ex);
+                Assert.Equal("A mismatch on the API was found. The type of MyApi was changed", ex.Message);
             }
         }
 
@@ -228,8 +228,7 @@ namespace ApiGuard.Tests
 
                 var differences = GetApiDifferences(firstApi, secondApi);
 
-                // Changed name of return type and typekind
-                Assert.Equal(2, differences.Count);
+                Assert.Single(differences);
             }
 
             [Fact]
@@ -1158,8 +1157,8 @@ namespace ApiGuard.Tests
             {
                 var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
-                Assert.IsType<ModifierChangedException>(ex);
-                Assert.Equal("A mismatch on the API was found. A modifier changed on MyApi", ex.Message);
+                Assert.IsType<TypeKindChangedException>(ex);
+                Assert.Equal("A mismatch on the API was found. The type of MyApi was changed", ex.Message);
             }
         }
 
@@ -1484,9 +1483,8 @@ namespace ApiGuard.Tests
                 var secondApi = await GetApi(typeof(After.MyApi));
 
                 var differences = GetApiDifferences(firstApi, secondApi);
-
-                // Changed name of return type and typekind
-                Assert.Equal(2, differences.Count);
+                
+                Assert.Single(differences);
             }
 
             [Fact]
