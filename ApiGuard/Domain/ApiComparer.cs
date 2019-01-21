@@ -29,14 +29,14 @@ namespace ApiGuard.Domain
 
             switch (mismatch.Reason)
             {
-                case MismatchReason.ModifierChanged: 
-                case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(mismatch); break;
-                case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(mismatch); break;
-                case MismatchReason.TypeNameChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
-                case MismatchReason.ElementRemoved: throw new ElementRemovedException(mismatch);
-                case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(mismatch);
                 case MismatchReason.TypeKindChanged: throw new TypeKindChangedException(mismatch);
+                case MismatchReason.ModifierChanged: throw new ModifierChangedException(mismatch);
+                case MismatchReason.TypeNameChanged: throw new DefinitionMismatchException(mismatch, withParentInfo: mismatch.Expected.Parent != null);
+                case MismatchReason.ParameterNameChanged: ThrowParameterNameChanged(mismatch); break;
                 case MismatchReason.MemberAddedToInterface: throw new MemberAddedToInterfaceException(mismatch);
+                case MismatchReason.AttributeMismatch: ThrowAttributeMismatch(mismatch); break;
+                case MismatchReason.ElementRemoved: throw new ElementRemovedException(mismatch);
+                case MismatchReason.DefinitionChanged: throw new DefinitionMismatchException(mismatch);                
                 case MismatchReason.None:
                     throw new ArgumentException("Unspecified mismatch reason");
             }
