@@ -38,6 +38,15 @@ namespace ApiGuard.Tests
                     // Added the implicit "abstract" modifier and changed typekind
                     Assert.Equal(2, differences.Count);
                 }
+
+                [Fact]
+                public async Task CompareResult()
+                {
+                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<DefinitionMismatchException>(ex);
+                    Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+                }
             }
         }
 
@@ -68,6 +77,15 @@ namespace ApiGuard.Tests
                 // Added the implicit "abstract" modifier and changed typekind
                 Assert.Equal(2, differences.Count);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class ApiType_FromAbstractClass_ToInterface
@@ -96,6 +114,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class ApiType_FromInterface_ToAbstractClass
@@ -123,6 +150,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -155,6 +191,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -189,6 +234,15 @@ namespace ApiGuard.Tests
                 // Changed name of return type and typekind
                 Assert.Equal(2, differences.Count);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class SwappedProperty_NoChange
@@ -220,6 +274,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -253,6 +316,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class InternalDeclaredAccessibilityApi
@@ -282,6 +354,15 @@ namespace ApiGuard.Tests
                 Assert.Equal("The type MyApi has to be public", ex.Message);
 
                 var secondApi = await GetApi(typeof(After.MyApi));
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -313,6 +394,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class InternalMethod_ToPrivate
@@ -343,6 +433,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class InternalMethod_ToProtected
@@ -372,6 +471,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -407,6 +515,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PublicMethod_ToInternal
@@ -436,6 +553,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -467,6 +593,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PublicMethod_ToProtected
@@ -496,6 +631,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -527,6 +671,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class ProtectedMethod_WithChange
@@ -557,6 +710,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class InternalMethod_WithChange
@@ -586,6 +748,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -618,6 +789,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class InstanceMethod_MadeStatic
@@ -647,6 +827,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -678,6 +867,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class VirtualMethod_MadeNonVirtual
@@ -707,6 +905,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -738,6 +945,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class NonStaticClass_MadeStatic
@@ -765,6 +981,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Equal(2, differences.Count);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -795,6 +1020,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Equal(2, differences.Count);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -828,6 +1062,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class NonAbstractMethod_MadeAbstract
@@ -860,6 +1103,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class NonAbstractType_MadeAbstract
@@ -888,6 +1140,15 @@ namespace ApiGuard.Tests
 
                 // Changed modifiers and type kind
                 Assert.Equal(2, differences.Count);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -918,6 +1179,15 @@ namespace ApiGuard.Tests
                 // This records a change in modifiers as well as the type
                 Assert.Equal(2, differences.Count);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class SealedType_MadeNonSealed
@@ -946,6 +1216,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class NonSealedType_MadeSealed
@@ -973,6 +1252,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -1004,6 +1292,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class ImplicitlyDeclaredAccessibilityMethod_MadePrivate
@@ -1033,6 +1330,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -1064,6 +1370,15 @@ namespace ApiGuard.Tests
 
                 Assert.Empty(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class ImplicitlyDeclaredAccessibilityProperty_MadePublic
@@ -1093,6 +1408,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -1124,6 +1448,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PublicProperty_MadeImplicit
@@ -1153,6 +1486,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -1185,6 +1527,15 @@ namespace ApiGuard.Tests
                 // Changed name of return type and typekind
                 Assert.Equal(2, differences.Count);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PublicProperty_MadeInternal
@@ -1214,6 +1565,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Single(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
 
@@ -1245,6 +1605,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PublicProperty_MadePrivate
@@ -1275,6 +1644,15 @@ namespace ApiGuard.Tests
 
                 Assert.Single(differences);
             }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
+            }
         }
 
         public class PrivateProperty_WithChange
@@ -1304,6 +1682,15 @@ namespace ApiGuard.Tests
                 var differences = GetApiDifferences(firstApi, secondApi);
 
                 Assert.Empty(differences);
+            }
+
+            [Fact]
+            public async Task CompareResult()
+            {
+                var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                Assert.IsType<DefinitionMismatchException>(ex);
+                Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
             }
         }
     }
