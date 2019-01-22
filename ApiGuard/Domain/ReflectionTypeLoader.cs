@@ -33,7 +33,7 @@ namespace ApiGuard.Domain
                     { typeof(void), "void" }
                 };
          
-        public Task<MyType> LoadApi(object input)
+        public MyType LoadApi(object input)
         {
             var apiSymbol = (Type) input;
             
@@ -43,8 +43,7 @@ namespace ApiGuard.Domain
             }
 
             var api = GetType(apiSymbol, apiSymbol.Assembly, null);
-
-            return Task.FromResult(api);
+            return api;
         }
 
         private TypeKind GetTypeKind(Type typeSymbol)

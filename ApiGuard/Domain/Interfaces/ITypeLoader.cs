@@ -6,6 +6,6 @@ namespace ApiGuard.Domain.Interfaces
 {
     internal interface ITypeLoader
     {
-        Task<MyType> LoadApi(object input);
+        MyType LoadApi(object input);
     }
 }

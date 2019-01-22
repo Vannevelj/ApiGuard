@@ -7,9 +7,9 @@ namespace ApiGuard.TestApiTests
     public class UnitTest1
     {
         [Fact]
-        public async Task Test1() => await ApiGuard.ApiAssert.HasNotChanged(typeof(MyExampleService));
+        public void Test1() => ApiGuard.ApiAssert.HasNotChanged(typeof(MyExampleService));
 
         [Fact]
-        public async Task Test2() => await ApiGuard.ApiAssert.HasNotChanged(typeof(MyOtherService), typeof(TheThirdService));
+        public void Test2() => ApiGuard.ApiAssert.HasNotChanged(typeof(MyOtherService), typeof(TheThirdService));
     }
 }

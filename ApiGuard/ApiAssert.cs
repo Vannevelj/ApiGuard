@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using ApiGuard.Domain;
 using ApiGuard.Domain.Strategies;
@@ -7,25 +8,24 @@ namespace ApiGuard
 {
     public static class ApiAssert
     {
-        public static async Task HasNotChanged(params Type[] types)
+        public static void HasNotChanged(params Type[] types)
         {
             foreach (var type in types)
             {
-                await HasNotChanged(type);
+                HasNotChanged(type);
             }
         }
 
-        private static async Task HasNotChanged(Type type)
+        private static void HasNotChanged(Type type)
         {
             var projectResolver = new ProjectResolver();
-            //var symbolProvider = new FileSystemRoslynSymbolProvider(projectResolver);
-            //var typeLoader = new RoslynTypeLoader(symbolProvider);
 
             var typeLoader = new ReflectionTypeLoader();
             var projectInfo = projectResolver.GetProjectInfo(type);
 
-            var api = await typeLoader.LoadApi(type);
+            var api = typeLoader.LoadApi(type);
 
+            Directory.CreateDirectory(projectInfo.TestFolderPath);
             if (!projectResolver.ApiFileExists(projectInfo, type))
             {
                 projectResolver.WriteApiToFile(projectInfo, type, api);

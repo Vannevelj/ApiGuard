@@ -23,7 +23,7 @@ namespace ApiGuard.Domain
 
         public ProjectInfo GetProjectInfo(Type type)
         {
-            var assemblyPath = GetAssemblyFullPath(type.Assembly);
+            var assemblyPath = GetAssemblyFullPath(Assembly.GetExecutingAssembly());
             var projectName = type.Assembly.GetName().Name;
             var bin = Path.DirectorySeparatorChar + "bin";
             var testProjectPath = assemblyPath.Substring(0, assemblyPath.IndexOf(bin, StringComparison.InvariantCultureIgnoreCase));
@@ -34,7 +34,8 @@ namespace ApiGuard.Domain
             {
                 ProjectName = projectName,
                 SolutionPath = solutionPath,
-                ProjectFilePath = apiProjectPath
+                ProjectFilePath = apiProjectPath,
+                TestProjectPath = testProjectPath
             };
         }
 
