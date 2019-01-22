@@ -15,16 +15,16 @@ namespace ApiGuard.Tests
             return strategy.GetApiDifferences(originalApi, newApi);
         }
 
-        internal static async Task<MyType> GetApi(Type type)
+        internal static MyType GetApi(Type type)
         {
             var typeLoader = new ReflectionTypeLoader();
-            return await typeLoader.LoadApi(type);
+            return typeLoader.LoadApi(type);
         }
 
-        internal static async Task Compare(Type originalApi, Type newApi)
+        internal static void Compare(Type originalApi, Type newApi)
         {
-            var firstApi = await GetApi(originalApi);
-            var secondApi = await GetApi(newApi);
+            var firstApi = GetApi(originalApi);
+            var secondApi = GetApi(newApi);
 
             new ApiComparer(new BestGuessEndpointMatchingStrategy())
                 .Compare(firstApi, secondApi);

@@ -29,8 +29,8 @@ namespace ApiGuard.Tests
                 [Fact]
                 public async Task Differences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -38,9 +38,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<DefinitionMismatchException>(ex);
                     Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received bool MyApi.FirstMethod()", ex.Message);
@@ -66,10 +66,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyNewApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyNewApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -77,9 +77,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyNewApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyNewApi)));
 
                     Assert.IsType<DefinitionMismatchException>(ex);
                     Assert.Equal("A mismatch on the API was found. Expected MyApi but received MyNewApi", ex.Message);
@@ -105,10 +105,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -116,9 +116,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
@@ -144,10 +144,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -155,9 +155,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
@@ -183,10 +183,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -194,9 +194,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    await Compare(typeof(Before.MyApi), typeof(After.MyApi));
+                    Compare(typeof(Before.MyApi), typeof(After.MyApi));
                 }
             }
 
@@ -220,10 +220,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -231,9 +231,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    await Compare(typeof(Before.MyApi), typeof(After.MyApi));
+                    Compare(typeof(Before.MyApi), typeof(After.MyApi));
                 }
             }
 
@@ -257,10 +257,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -268,9 +268,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<MemberAddedToInterfaceException>(ex);
                     Assert.Equal("A mismatch on the API was found. A member was added to the interface of MyApi", ex.Message);
@@ -297,10 +297,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -308,9 +308,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<MemberAddedToInterfaceException>(ex);
                     Assert.Equal("A mismatch on the API was found. A member was added to the interface of MyApi", ex.Message);
@@ -337,10 +337,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -348,9 +348,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<DefinitionMismatchException>(ex);
                     Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received double MyApi.FirstMethod()", ex.Message);
@@ -377,10 +377,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -388,9 +388,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element bool MyApi.SecondMethod() was removed", ex.Message);
@@ -428,10 +428,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -439,9 +439,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element void MyApi.SecondMethod() was removed", ex.Message);
@@ -478,10 +478,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -489,9 +489,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    await Compare(typeof(Before.MyApi), typeof(After.MyApi));
+                    Compare(typeof(Before.MyApi), typeof(After.MyApi));
                 }
             }
 
@@ -524,10 +524,10 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareDifferences()
+                public void CompareDifferences()
                 {
-                    var firstApi = await GetApi(typeof(Before.MyApi));
-                    var secondApi = await GetApi(typeof(After.MyApi));
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
 
                     var differences = GetApiDifferences(firstApi, secondApi);
 
@@ -535,9 +535,9 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task CompareResult()
+                public void CompareResult()
                 {
-                    var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
                     Assert.IsType<DefinitionMismatchException>(ex);
                     Assert.Equal("A mismatch on the API was found. Expected void Opts.DoSomething() but received void Opts.DoSomething(int)", ex.Message);
