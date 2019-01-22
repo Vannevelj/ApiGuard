@@ -43,7 +43,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -93,7 +93,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -133,7 +133,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -183,7 +183,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -223,7 +223,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -274,7 +274,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -327,7 +327,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
@@ -377,7 +377,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Test()
+                public async Task CompareDifferences()
                 {
                     var firstApi = await GetApi(typeof(Before.MyApi));
                     var secondApi = await GetApi(typeof(After.MyApi));
