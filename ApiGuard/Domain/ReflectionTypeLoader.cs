@@ -47,6 +47,38 @@ namespace ApiGuard.Domain
             return Task.FromResult(api);
         }
 
+        private TypeKind GetTypeKind(Type typeSymbol)
+        {
+            if (typeSymbol.IsInterface)
+            {
+                return TypeKind.Interface;
+            }
+            else if (typeSymbol.IsClass)
+            {
+                if (!typeSymbol.IsAbstract)
+                {
+                    return TypeKind.Class;
+                }
+                else
+                {
+                    if (!typeSymbol.IsSealed)
+                    {
+                        return TypeKind.AbstractClass;
+                    }
+                    else
+                    {
+                        return TypeKind.Class;
+                    }
+                }
+            }
+            else if (typeSymbol.IsValueType)
+            {
+                return TypeKind.Struct;
+            }
+
+            return TypeKind.None;
+        }
+
         private MyType GetType(Type typeSymbol, Assembly definingAssembly, ISymbol parent)
         {
             var type = new MyType(GetName(typeSymbol))
@@ -54,32 +86,7 @@ namespace ApiGuard.Domain
                 Parent = parent
             };
 
-            if (typeSymbol.IsInterface)
-            {
-                type.TypeKind = TypeKind.Interface;
-            }
-            else if (typeSymbol.IsClass)
-            {
-                if (!typeSymbol.IsAbstract)
-                {
-                    type.TypeKind = TypeKind.Class;
-                }
-                else
-                {
-                    if (!typeSymbol.IsSealed)
-                    {
-                        type.TypeKind = TypeKind.AbstractClass;
-                    }
-                    else
-                    {
-                        type.TypeKind = TypeKind.Class;
-                    }
-                }
-            }
-            else if (typeSymbol.IsValueType)
-            {
-                type.TypeKind = TypeKind.Struct;
-            }
+            type.TypeKind = GetTypeKind(typeSymbol);
 
             if (Equals(typeSymbol.Assembly, definingAssembly) && !typeSymbol.IsValueType)
             {

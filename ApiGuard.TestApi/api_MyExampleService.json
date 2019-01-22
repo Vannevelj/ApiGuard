@@ -14,7 +14,7 @@
         },
         "NestedElements": [],
         "Attributes": [],
-        "TypeKind": 0,
+        "TypeKind": 4,
         "Modifiers": []
       },
       "Name": "Method",
@@ -38,7 +38,7 @@
         },
         "NestedElements": [],
         "Attributes": [],
-        "TypeKind": 0,
+        "TypeKind": 4,
         "Modifiers": []
       },
       "Name": "MethodWithSimpleArgs",
@@ -95,7 +95,7 @@
             },
             "NestedElements": [],
             "Attributes": [],
-            "TypeKind": 0,
+            "TypeKind": 4,
             "Modifiers": []
           },
           "Ordinal": 2,
@@ -120,7 +120,7 @@
         },
         "NestedElements": [],
         "Attributes": [],
-        "TypeKind": 0,
+        "TypeKind": 4,
         "Modifiers": []
       },
       "Name": "MethodWithComplexArgs",
@@ -168,7 +168,7 @@
                   },
                   "NestedElements": [],
                   "Attributes": [],
-                  "TypeKind": 0,
+                  "TypeKind": 4,
                   "Modifiers": []
                 },
                 "Name": "Id",
@@ -263,7 +263,7 @@
                   },
                   "NestedElements": [],
                   "Attributes": [],
-                  "TypeKind": 0,
+                  "TypeKind": 4,
                   "Modifiers": []
                 },
                 "Name": "DoSomething",
@@ -282,7 +282,7 @@
                       },
                       "NestedElements": [],
                       "Attributes": [],
-                      "TypeKind": 0,
+                      "TypeKind": 4,
                       "Modifiers": []
                     },
                     "Ordinal": 0,
@@ -387,7 +387,7 @@
             },
             "NestedElements": [],
             "Attributes": [],
-            "TypeKind": 0,
+            "TypeKind": 4,
             "Modifiers": []
           },
           "Ordinal": 2,
