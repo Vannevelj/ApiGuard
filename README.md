@@ -17,3 +17,13 @@ using ApiGuard;
 public void ExampleService_Api_HasNotChanged() =>
     ApiAssert.HasNotChanged(typeof(MyExampleService));
 ```
+
+# Diving in
+
+These are the two most important files:
+
+* https://github.com/Vannevelj/ApiGuard/blob/master/ApiGuard/Domain/ReflectionTypeLoader.cs
+
+* https://github.com/Vannevelj/ApiGuard/blob/master/ApiGuard/Domain/Strategies/BestGuessEndpointMatchingStrategy.cs
+
+Respectively they create an intermediate representation of the type and then compare two types to find out where they differ and in what manner.
