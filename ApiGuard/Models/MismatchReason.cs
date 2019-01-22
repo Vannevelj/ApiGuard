@@ -7,12 +7,12 @@
     {
         None = 0,
         DefinitionChanged = 10,
-        ElementRemoved = 20,
-        AttributeMismatch = 30,
-        MemberAddedToInterface = 40,
-        ParameterNameChanged = 50,
-        TypeNameChanged = 60,
-        ModifierChanged = 70,
-        TypeKindChanged = 80,
+        AttributeMismatch = 20,
+        MemberAddedToInterface = 30,
+        ParameterNameChanged = 40,
+        ModifierChanged = 50,
+        TypeKindChanged = 60,
+        TypeNameChanged = 70,
+        ElementRemoved = 80,
     }
 }

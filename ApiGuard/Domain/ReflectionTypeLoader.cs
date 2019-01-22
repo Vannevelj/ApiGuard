@@ -54,20 +54,31 @@ namespace ApiGuard.Domain
                 Parent = parent
             };
 
-            if (typeSymbol.IsClass && !typeSymbol.IsAbstract)
+            if (typeSymbol.IsInterface)
             {
-                type.TypeKind = TypeKind.Class;
+                type.TypeKind = TypeKind.Interface;
             }
-            else
+            else if (typeSymbol.IsClass)
             {
-                if (typeSymbol.IsInterface)
+                if (!typeSymbol.IsAbstract)
                 {
-                    type.TypeKind = TypeKind.Interface;
+                    type.TypeKind = TypeKind.Class;
                 }
-                else if (typeSymbol.IsClass)
+                else
                 {
-                    type.TypeKind = TypeKind.AbstractClass;
+                    if (!typeSymbol.IsSealed)
+                    {
+                        type.TypeKind = TypeKind.AbstractClass;
+                    }
+                    else
+                    {
+                        type.TypeKind = TypeKind.Class;
+                    }
                 }
+            }
+            else if (typeSymbol.IsValueType)
+            {
+                type.TypeKind = TypeKind.Struct;
             }
 
             if (Equals(typeSymbol.Assembly, definingAssembly) && !typeSymbol.IsValueType)

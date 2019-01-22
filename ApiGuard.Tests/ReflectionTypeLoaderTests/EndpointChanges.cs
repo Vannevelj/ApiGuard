@@ -392,8 +392,8 @@ namespace ApiGuard.Tests
                 {
                     var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
-                    Assert.IsType<DefinitionMismatchException>(ex);
-                    Assert.Equal("A mismatch on the API was found. Expected int MyApi.FirstMethod() but received double MyApi.FirstMethod()", ex.Message);
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element bool MyApi.SecondMethod() was removed", ex.Message);
                 }
             }
 
@@ -443,8 +443,8 @@ namespace ApiGuard.Tests
                 {
                     var ex = await Record.ExceptionAsync(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
 
-                    Assert.IsType<DefinitionMismatchException>(ex);
-                    Assert.Equal("A mismatch on the API was found. Expected Opts MyApi.FirstMethod() but received NewOptions MyApi.FirstMethod()", ex.Message);
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element void MyApi.SecondMethod() was removed", ex.Message);
                 }
             }
 
