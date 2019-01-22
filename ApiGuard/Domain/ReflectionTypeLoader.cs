@@ -33,10 +33,8 @@ namespace ApiGuard.Domain
                     { typeof(void), "void" }
                 };
          
-        public MyType LoadApi(object input)
+        public MyType LoadApi(Type apiSymbol)
         {
-            var apiSymbol = (Type) input;
-            
             if (!(apiSymbol.IsPublic || apiSymbol.IsNestedPublic))
             {
                 throw new ApiNotPublicException(apiSymbol.Name);
