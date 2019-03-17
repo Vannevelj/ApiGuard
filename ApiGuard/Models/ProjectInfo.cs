@@ -7,9 +7,6 @@ namespace ApiGuard.Models
     {
         private const string TestFolderName = "generated_api";
 
-        public string SolutionPath { get; set; }
-        public string ProjectName { get; set; }
-        public string ProjectFilePath { get; set; }
         public string TestProjectPath { get; set; }
         public string TestFolderPath => Path.Combine(TestProjectPath, TestFolderName);       
 

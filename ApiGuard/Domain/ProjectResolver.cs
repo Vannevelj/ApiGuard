@@ -23,18 +23,12 @@ namespace ApiGuard.Domain
 
         public ProjectInfo GetProjectInfo(Type type)
         {
-            var assemblyPath = GetAssemblyFullPath(Assembly.GetExecutingAssembly());
-            var projectName = type.Assembly.GetName().Name;
+            var assemblyPath = GetAssemblyFullPath(type.Assembly);
             var bin = Path.DirectorySeparatorChar + "bin";
             var testProjectPath = assemblyPath.Substring(0, assemblyPath.IndexOf(bin, StringComparison.InvariantCultureIgnoreCase));
-            var solutionPath = testProjectPath.Substring(0, testProjectPath.LastIndexOf(Path.DirectorySeparatorChar));
-            var apiProjectPath = Path.Combine(solutionPath, projectName, $"{projectName}.csproj");
 
             return new ProjectInfo
             {
-                ProjectName = projectName,
-                SolutionPath = solutionPath,
-                ProjectFilePath = apiProjectPath,
                 TestProjectPath = testProjectPath
             };
         }

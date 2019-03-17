@@ -7,11 +7,14 @@
     <Authors>Jeroen Vannevel</Authors>
     <Company></Company>
     <Description>Provides a unit testing API that ensures the API of your service remains backwards compatible.</Description>
-    <Copyright>MIT</Copyright>
+    <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Vannevelj/ApiGuard</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
     <PackageTags>C#, Unit Testing, API</PackageTags>
-    <PackageLicenseUrl>https://github.com/Vannevelj/ApiGuard/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <Version>1.0.1</Version>
+    <PackageReleaseNotes>Fixes an exception when trying to resolve the test project path</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
