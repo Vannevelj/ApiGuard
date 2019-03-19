@@ -1,4 +1,5 @@
 ﻿using ApiGuard.Exceptions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -122,6 +123,104 @@ namespace ApiGuard.Tests
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element int MyApi.FirstMethod() was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_AsParameterInAList
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                       public string Name { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public string NewName { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyObject.Name (string) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_AsParameterInADictionary
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public Dictionary<string, MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public string Name { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public Dictionary<string, MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public string NewName { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyObject.Name (string) was removed", ex.Message);
                 }
             }
 

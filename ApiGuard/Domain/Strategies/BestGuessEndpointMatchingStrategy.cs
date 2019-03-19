@@ -45,6 +45,24 @@ namespace ApiGuard.Domain.Strategies
             {
                 AddMismatch(symbols, existingType, newType, MismatchReason.MemberAddedToInterface);
             }
+
+            CompareGenericArguments(existingType, newType, symbols);
+        }
+
+        private void CompareGenericArguments(MyType existingType, MyType newType, List<SymbolMismatch> symbols)
+        {
+            if (existingType.GenericTypeArguments.Count != newType.GenericTypeArguments.Count)
+            {
+                AddMismatch(symbols, existingType, newType, MismatchReason.DefinitionChanged);
+                return;
+            }
+
+            for (var i = 0; i < existingType.GenericTypeArguments.Count; i++)
+            {
+                var existingTypeArgument = existingType.GenericTypeArguments[i];
+                var correspondingType = newType.GenericTypeArguments[i];
+                Compare(existingTypeArgument, correspondingType, symbols);
+            }
         }
 
         private void Compare(List<IMemberSymbol> existingSymbols, List<IMemberSymbol> newSymbols, List<SymbolMismatch> symbols)

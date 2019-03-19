@@ -14,6 +14,7 @@ namespace ApiGuard.Models
         public List<IMemberSymbol> NestedElements { get; set; } = new List<IMemberSymbol>();
         public List<MyAttribute> Attributes { get; set; } = new List<MyAttribute>();
         public TypeKind TypeKind { get; set; }
+        public List<MyType> GenericTypeArguments { get; set; } = new List<MyType>();
 
         public List<string> Modifiers { get; set; } = new List<string>();
 

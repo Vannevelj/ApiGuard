@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace ApiGuard.Domain
 {
@@ -113,6 +112,9 @@ namespace ApiGuard.Domain
                 type.Modifiers = GetModifiers(typeSymbol);
             }
 
+            var genericTypeArguments = typeSymbol.GetGenericArguments();
+            type.GenericTypeArguments = genericTypeArguments.Select(x => GetType(x, definingAssembly, type)).ToList();
+
             return type;
         }
 
@@ -193,12 +195,19 @@ namespace ApiGuard.Domain
         private List<string> GetModifiers(PropertyInfo property)
         {
             // https://stackoverflow.com/a/20807747/1864167
-            return GetModifiers(property.GetGetMethod(true)).Union(GetModifiers(property.GetSetMethod(true))).ToList();
+            var getMethod = property.GetGetMethod(true);
+            var setMethod = property.GetSetMethod(true);
+
+            return GetModifiers(getMethod).Union(GetModifiers(setMethod)).ToList();
         }
 
         private List<string> GetModifiers(MethodInfo method)
         {
             var modifiers = new List<string>();
+            if (method == null)
+            {
+                return modifiers;
+            }
             
             if (method.IsStatic) { modifiers.Add("static"); }
             if (method.IsVirtual) { modifiers.Add("virtual"); }
@@ -245,6 +254,10 @@ namespace ApiGuard.Domain
         private List<string> GetModifiers(Type type)
         {
             var modifiers = new List<string>();
+            if (type == null)
+            {
+                return modifiers;
+            }
 
             if (type.IsAbstract) { modifiers.Add("abstract"); }
             if (type.IsSealed) { modifiers.Add("sealed"); }

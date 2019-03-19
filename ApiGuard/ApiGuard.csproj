@@ -12,8 +12,8 @@
     <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
     <PackageTags>C#, Unit Testing, API</PackageTags>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>1.0.1</Version>
-    <PackageReleaseNotes>Fixes an exception when trying to resolve the test project path</PackageReleaseNotes>
+    <Version>1.0.3</Version>
+    <PackageReleaseNotes>Include type arguments in comparisons (important for collections)</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
