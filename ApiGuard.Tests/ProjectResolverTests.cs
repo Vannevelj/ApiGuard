@@ -18,6 +18,8 @@ namespace ApiGuard.Tests
             var deserializedApi = resolver.DeserializeApi(serializedApi);
 
             Assert.Equal(api, deserializedApi);
+            api.NestedElements.ForEach(x => Assert.NotNull(x.Parent));
+            deserializedApi.NestedElements.ForEach(x => Assert.NotNull(x.Parent));
         }
 
         public class TestApi

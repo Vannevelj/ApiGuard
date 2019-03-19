@@ -12,8 +12,8 @@
     <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
     <PackageTags>C#, Unit Testing, API</PackageTags>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>1.0.5</Version>
-    <PackageReleaseNotes>Added tests around serialization and better handling for nullable types</PackageReleaseNotes>
+    <Version>1.0.6</Version>
+    <PackageReleaseNotes>Fixed an issue where Type.Parent would not get deserialized properly</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 

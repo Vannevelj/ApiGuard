@@ -24,6 +24,8 @@ namespace ApiGuard.Models
             Name = typename;
         }
 
+        public MyType() { }
+
         public bool Equals(MyType other)
         {
             if (ReferenceEquals(other, this))
