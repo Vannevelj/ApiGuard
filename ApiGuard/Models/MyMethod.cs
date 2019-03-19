@@ -69,6 +69,6 @@ namespace ApiGuard.Models
         public static bool operator !=(MyMethod method1, MyMethod method2) => !(method1 == method2);
 
         public override string ToString()
-            => $"{ReturnType.Name} {Parent}.{Name}({string.Join(", ", Parameters.OrderBy(x => x.Ordinal).Select(x => x.Type.Name))})";
+            => $"{ReturnType.Name} {Parent}.{Name}({string.Join(", ", Parameters.OrderBy(x => x.Ordinal).Select(x => x.Type))})";
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ApiGuard.Exceptions;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ApiGuard.Tests
@@ -28,7 +28,7 @@ namespace ApiGuard.Tests
                 }
 
                 [Fact]
-                public async Task Differences()
+                public void CompareDifferences()
                 {
                     var firstApi = GetApi(typeof(Before.MyApi));
                     var secondApi = GetApi(typeof(After.MyApi));
@@ -221,6 +221,123 @@ namespace ApiGuard.Tests
 
                     Assert.IsType<ElementRemovedException>(ex);
                     Assert.Equal("A mismatch on the API was found. The element MyObject.Name (string) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_OnStruct
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public DateTime SomeDate { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public DateTime SomeNewDate { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyApi.SomeDate (DateTime) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_OnNullableStruct
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public DateTime? SomeDate { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public DateTime? SomeNewDate { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyApi.SomeDate (DateTime?) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_OnReadonlyProperty
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public DateTime SomeDate => DateTime.UtcNow;
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public DateTime SomeNewDate => DateTime.UtcNow;
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyApi.SomeDate (DateTime) was removed", ex.Message);
                 }
             }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using ApiGuard.Models.Symbols;
 
 [assembly: InternalsVisibleTo("ApiGuard.Tests")]
@@ -51,6 +52,26 @@ namespace ApiGuard.Models
         public static bool operator ==(MyType type1, MyType type2) => EqualityComparer<MyType>.Default.Equals(type1, type2);
         public static bool operator !=(MyType type1, MyType type2) => !(type1 == type2);
 
-        public override string ToString() => $"{Name}";
+        public override string ToString()
+        {
+            if (!GenericTypeArguments.Any())
+            {
+                return Name;
+            }
+
+            var tokens = new List<string>();
+            foreach (var arg in GenericTypeArguments)
+            {
+                if (Name.StartsWith("Nullable", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    tokens.Add($"{arg.Name}?");
+                    continue;
+                }
+
+                tokens.Add(arg.Name);
+            }
+
+            return string.Join(", ", tokens);
+        }
     }
 }

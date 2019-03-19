@@ -41,6 +41,6 @@ namespace ApiGuard.Models
         public static bool operator ==(MyProperty property1, MyProperty property2) => EqualityComparer<MyProperty>.Default.Equals(property1, property2);
         public static bool operator !=(MyProperty property1, MyProperty property2) => !(property1 == property2);
 
-        public override string ToString() => $"{Parent.Name}.{Name} ({Type.Name})";
+        public override string ToString() => $"{Parent.Name}.{Name} ({Type})";
     }
 }
