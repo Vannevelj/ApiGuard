@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ApiGuard.Models.Symbols;
 
 namespace ApiGuard.Models
@@ -30,7 +31,9 @@ namespace ApiGuard.Models
                 return true;
             }
 
-            return Name == other.Name;
+            return Name == other.Name && 
+                   Values.Keys.SequenceEqual(other.Values.Keys) && 
+                   Values.Values.SequenceEqual(other.Values.Values);
         }
 
         public override int GetHashCode()

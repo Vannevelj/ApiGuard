@@ -224,6 +224,157 @@ namespace ApiGuard.Tests
                 }
             }
 
+            public class DifferentName_AsParameterInAList_AsNestedStruct
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public DateTime MyDate { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public DateTime MyNewDate { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyObject.MyDate (DateTime) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_AsParameterInAList_AsNestedNullableStruct
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public DateTime? MyDate { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public DateTime? MyNewDate { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyObject.MyDate (DateTime?) was removed", ex.Message);
+                }
+            }
+
+            public class DifferentName_AsParameterInAList_AsNestedEnum
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public MyEnum SomeEnumProperty { get; set; }
+                    }
+
+                    public enum MyEnum { }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public List<MyObject> Objects { get; set; }
+                    }
+
+                    public class MyObject
+                    {
+                        public MyEnum SomeNewEnumProperty { get; set; }
+                    }
+
+                    public enum MyEnum { }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Single(differences);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<ElementRemovedException>(ex);
+                    Assert.Equal("A mismatch on the API was found. The element MyObject.SomeEnumProperty (MyEnum) was removed", ex.Message);
+                }
+            }
+
             public class DifferentName_OnStruct
             {
                 public class Before
@@ -757,6 +908,45 @@ namespace ApiGuard.Tests
 
                     Assert.IsType<DefinitionMismatchException>(ex);
                     Assert.Equal("A mismatch on the API was found. Expected void Opts.DoSomething() but received void Opts.DoSomething(int)", ex.Message);
+                }
+            }
+
+            public class DifferentType_AsGenericCollection
+            {
+                public class Before
+                {
+                    public class MyApi
+                    {
+                        public Dictionary<string, string> Objects { get; set; }
+                    }
+                }
+
+                public class After
+                {
+                    public class MyApi
+                    {
+                        public List<string> Objects { get; set; }
+                    }
+                }
+
+                [Fact]
+                public void CompareDifferences()
+                {
+                    var firstApi = GetApi(typeof(Before.MyApi));
+                    var secondApi = GetApi(typeof(After.MyApi));
+
+                    var differences = GetApiDifferences(firstApi, secondApi);
+
+                    Assert.Equal(2, differences.Count);
+                }
+
+                [Fact]
+                public void CompareResult()
+                {
+                    var ex = Record.Exception(() => Compare(typeof(Before.MyApi), typeof(After.MyApi)));
+
+                    Assert.IsType<DefinitionMismatchException>(ex);
+                    Assert.Equal("A mismatch on the API was found. Expected MyApi.Objects (Dictionary<string, string>) but received MyApi.Objects (List<string>)", ex.Message);
                 }
             }
         }

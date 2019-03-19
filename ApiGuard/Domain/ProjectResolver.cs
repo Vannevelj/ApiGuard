@@ -62,9 +62,12 @@ namespace ApiGuard.Domain
             return File.Exists(documentPath);
         }
 
+        internal string SerializeApi(MyType api) => JsonConvert.SerializeObject(api, Formatting.Indented, _serializerSettings);
+        internal MyType DeserializeApi(string existingApiJson) => JsonConvert.DeserializeObject<MyType>(existingApiJson, _serializerSettings);
+
         public void WriteApiToFile(ProjectInfo projectInfo, Type type, MyType api)
         {
-            File.WriteAllText(projectInfo.GetApiFilePath(type), JsonConvert.SerializeObject(api, Formatting.Indented, _serializerSettings));
+            File.WriteAllText(projectInfo.GetApiFilePath(type), SerializeApi(api));
         }
 
         public MyType ReadApiFromFile(ProjectInfo projectInfo, Type type)
@@ -72,7 +75,7 @@ namespace ApiGuard.Domain
             try
             {
                 var existingApiJson = File.ReadAllText(projectInfo.GetApiFilePath(type));
-                return JsonConvert.DeserializeObject<MyType>(existingApiJson, _serializerSettings);
+                return DeserializeApi(existingApiJson);
             }
             catch (Exception e)
             {

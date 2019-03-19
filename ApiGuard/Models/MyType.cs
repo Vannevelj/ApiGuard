@@ -33,7 +33,10 @@ namespace ApiGuard.Models
 
             return other != null &&
                    Name == other.Name &&
-                NestedElements.SequenceEqual(other.NestedElements);
+                   Attributes.SequenceEqual(other.Attributes) &&
+                   GenericTypeArguments.SequenceEqual(other.GenericTypeArguments) &&
+                   TypeKind == other.TypeKind &&
+                   NestedElements.SequenceEqual(other.NestedElements);
         }
 
         public override bool Equals(object obj)
@@ -54,24 +57,25 @@ namespace ApiGuard.Models
 
         public override string ToString()
         {
+            var name = Name;
+
             if (!GenericTypeArguments.Any())
             {
-                return Name;
+                return name;
             }
-
+            
             var tokens = new List<string>();
             foreach (var arg in GenericTypeArguments)
             {
-                if (Name.StartsWith("Nullable", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    tokens.Add($"{arg.Name}?");
-                    continue;
-                }
-
-                tokens.Add(arg.Name);
+                tokens.Add(arg.ToString());
             }
 
-            return string.Join(", ", tokens);
+            if (name.StartsWith("Nullable", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return $"{tokens[0]}?";
+            }
+
+            return $"{name}<{string.Join(", ", tokens)}>";
         }
     }
 }

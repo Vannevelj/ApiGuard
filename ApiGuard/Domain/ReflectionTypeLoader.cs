@@ -3,6 +3,7 @@ using ApiGuard.Exceptions;
 using ApiGuard.Models;
 using ApiGuard.Models.Symbols;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -118,7 +119,16 @@ namespace ApiGuard.Domain
             return type;
         }
 
-        private string GetName(Type typeSymbol) => Aliases.TryGetValue(typeSymbol, out var name) ? name : typeSymbol.Name;
+        private string GetName(Type typeSymbol)
+        {
+            if (typeSymbol.IsGenericType) 
+            {
+                var indexOfTypeArity = typeSymbol.Name.IndexOf("`", StringComparison.InvariantCultureIgnoreCase);
+                return typeSymbol.Name.Substring(0, indexOfTypeArity);
+            }
+
+            return Aliases.TryGetValue(typeSymbol, out var name) ? name : typeSymbol.Name;
+        }
 
         private MyProperty GetProperty(PropertyInfo propertySymbol, Assembly definingAssembly, ISymbol parent)
         {

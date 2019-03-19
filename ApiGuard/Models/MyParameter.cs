@@ -27,7 +27,8 @@ namespace ApiGuard.Models
 
             return other != null &&
                    Ordinal == other.Ordinal &&
-                   Type == other.Type;
+                   Type == other.Type &&
+                   Name == other.Name;
         }
 
         public override int GetHashCode()

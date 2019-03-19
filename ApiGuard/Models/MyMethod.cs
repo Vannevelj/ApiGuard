@@ -27,33 +27,12 @@ namespace ApiGuard.Models
                 return true;
             }
 
-            if (other == null ||
-                Name != other.Name ||
-                Parameters.Count != other.Parameters.Count ||
-                ReturnType != other.ReturnType)
-            {
-                return false;
-            }
-
-            if (other.Parameters.Count == 0)
-            {
-                return true;
-            }
-
-            for (var index = 0; index < Parameters.Count; index++)
-            {
-                var param = Parameters[index];
-                var matchingParam = other.Parameters[index];
-
-                if (param == matchingParam)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
+            return other != null &&
+                Name == other.Name &&
+                Parameters.SequenceEqual(other.Parameters) &&
+                ReturnType == other.ReturnType &&
+                Modifiers.SequenceEqual(other.Modifiers) &&
+                Attributes.SequenceEqual(other.Attributes);
         }
 
         public override int GetHashCode()
