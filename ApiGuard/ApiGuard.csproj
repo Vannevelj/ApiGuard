@@ -12,8 +12,8 @@
     <RepositoryUrl>https://github.com/Vannevelj/ApiGuard</RepositoryUrl>
     <PackageTags>C#, Unit Testing, API</PackageTags>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Version>1.0.4</Version>
-    <PackageReleaseNotes>Added support for nullable types</PackageReleaseNotes>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>Added tests around serialization and better handling for nullable types</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
